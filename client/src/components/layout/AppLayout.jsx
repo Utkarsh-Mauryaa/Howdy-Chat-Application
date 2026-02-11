@@ -9,6 +9,7 @@ import { Drawer, Skeleton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducer/misc";
 import { useErrors } from "../../hooks/hook";
+import { getSocket } from "../../utils/socket";
 
 function AppLayout() {
   return function (WrappedComponent) {
@@ -16,11 +17,13 @@ function AppLayout() {
       const params = useParams();
       const dispatch = useDispatch();
       const chatId = params.chatId;
+      const socket = getSocket();
       const { isMobile } = useSelector((state) => state.misc);
-const {user} = useSelector(state => state.auth);
-      const { isLoading, data, isError, error, refetch } = useGetMyChatsQuery("");
+      const { user } = useSelector((state) => state.auth);
+      const { isLoading, data, isError, error, refetch } =
+        useGetMyChatsQuery("");
 
-      useErrors([{isError, error}])
+      useErrors([{ isError, error }]);
 
       const handleDeleteChat = (e, _id, groupChat) => {
         e.preventDefault();
@@ -38,7 +41,7 @@ const {user} = useSelector(state => state.auth);
             ) : (
               <Drawer open={isMobile} onClose={handleMobileClose}>
                 <ChatList
-                w="70vw"
+                  w="70vw"
                   chats={data?.chats}
                   chatId={chatId}
                   newMessagesAlert={[{ chatId, count: 4 }]}
@@ -66,7 +69,7 @@ const {user} = useSelector(state => state.auth);
                 <WrappedComponent />
               </div>
               <div className="h-full text-stone-50 hidden min-[1024px]:block bg-neutral-900">
-                <Profile user={user}/>
+                <Profile user={user} />
               </div>
             </div>
           </div>
