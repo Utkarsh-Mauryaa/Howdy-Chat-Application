@@ -1,12 +1,29 @@
-import { Menu } from '@mui/material'
+import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { setIsFileMenu } from '../../redux/reducer/misc';
+import { FaRegImage } from "react-icons/fa6";
 
+const FileMenu = ({anchorE1}) => {
 
-const FileMenu = ({anchor1}) => {
+  const {isFileMenu} = useSelector(state=> state.misc);
+
+  const dispatch = useDispatch();
+
+  const closeFileMenu = () => dispatch(setIsFileMenu(false));
+
   return (
-    <Menu open={false}>
-        <div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dolor rem officiis ab harum, commodi animi beatae incidunt dicta laborum.
-        </div>
+    <Menu anchorEl={anchorE1} open={isFileMenu} onClose={closeFileMenu}>
+      <div className='w-20'>
+<MenuList>
+  <MenuItem>
+  <Tooltip title="Image">
+    <FaRegImage />
+  </Tooltip>
+  <ListItemText style={{marginLeft: "0.5rem"}}>Image</ListItemText>
+  </MenuItem>
+</MenuList>
+      </div>
+
     </Menu>
   )
 }

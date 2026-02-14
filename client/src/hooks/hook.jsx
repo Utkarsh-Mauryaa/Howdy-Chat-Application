@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { NEW_MESSAGE } from "../utils/events";
 
 const useErrors = (errors = []) => {
   useEffect(() => {
@@ -39,4 +40,18 @@ const useAsyncMutation = (mutationHook) => {
   return [executeMutation, isLoading, data];
 };
 
-export { useErrors, useAsyncMutation };
+const useSocketEvents = (socket, handlers) => {
+  useEffect(() => {
+    // object.entries converts an object into an array of key-value pairs
+    Object.entries(handlers).forEach(([event, handler])=>{
+      socket.on(event, handler);
+    })
+    return () => {
+      Object.entries(handlers).forEach(([event, handler])=>{
+      socket.off(event, handler);
+    })
+    }
+  },[socket, handlers])
+}
+
+export { useErrors, useAsyncMutation, useSocketEvents };

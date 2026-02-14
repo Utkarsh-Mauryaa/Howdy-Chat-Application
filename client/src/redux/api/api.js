@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../utils/config";
 
-
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1` }),
-  tagTypes: ["Chat", "User"],
+  tagTypes: ["Chat", "User", "Message"],
   endpoints: (builder) => ({
     getMyChats: builder.query({
       query: () => ({
@@ -15,39 +14,67 @@ const api = createApi({
       providesTags: ["Chat"],
     }),
     searchUser: builder.query({
-        query: (name) => ({
-            url: `/user/search/?name=${name}`,
-            credentials: "include"
-        }),
-        providesTags: ["User"]
+      query: (name) => ({
+        url: `/user/search/?name=${name}`,
+        credentials: "include",
+      }),
+      providesTags: ["User"],
     }),
     sendFriendRequest: builder.mutation({
-        query:(data) => ({
-            url: "/user/sendrequest",
-            method: "PUT",
-            credentials:"include",
-            body: data
-        }),
-        invalidatesTags: ["User"],
+      query: (data) => ({
+        url: "/user/sendrequest",
+        method: "PUT",
+        credentials: "include",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
     getNotifications: builder.query({
-        query: () => ({
-            url: `/user/getnotifications`,
-            credentials: "include"
-        }),
-        keepUnusedDataFor: 0, // means we are not doing any caching
+      query: () => ({
+        url: `/user/getnotifications`,
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0, // means we are not doing any caching
     }),
     acceptFriendRequest: builder.mutation({
-        query:(data) => ({
-            url: "/user/acceptrequest",
-            method: "PUT",
-            credentials:"include",
-            body: data
+      query: (data) => ({
+        url: "/user/acceptrequest",
+        method: "PUT",
+        credentials: "include",
+        body: data,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    chatDetails: builder.query({
+      query: ({ chatId, populate = false }) => {
+
+        let url = `/chat/${chatId}`;
+        if (populate) url += `?populate=true`;
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+    getMessages: builder.query({ // for paging
+      query: ({ chatId, page }) => ({
+          url: `/chat/message/${chatId}?page=${page}`,
+          credentials: "include",
         }),
-        invalidatesTags: ["Chat"],
+      providesTags: ["Message"],
     }),
   }),
 });
 
 export default api;
-export const { useGetMyChatsQuery, useLazySearchUserQuery, useSendFriendRequestMutation, useGetNotificationsQuery, useAcceptFriendRequestMutation } = api
+export const {
+  useGetMyChatsQuery,
+  useLazySearchUserQuery,
+  useSendFriendRequestMutation,
+  useGetNotificationsQuery,
+  useAcceptFriendRequestMutation,
+  useChatDetailsQuery,
+  useGetMessagesQuery
+} = api;

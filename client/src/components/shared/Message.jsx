@@ -7,7 +7,7 @@ const Message = ({ message, user }) => {
   const { sender, content, attachments = [], createdAt } = message
   const timeAgo = moment(createdAt).fromNow();
   return (
-    <div className={`p-2 rounded-xl border-2 border-slate-300 m-2 ${(sender?._id === user?._id) ? "self-end" : "self-start"}`}>
+    <div className={`p-2 bg-lime-400 rounded-xl border-2 border-slate-300 m-2 ${(sender?._id === user?._id) ? "self-end" : "self-start"}`}>
       {(sender?._id !== user._id) && <p className="text-pink-600 font-semibold text-xs">{sender.name}</p>}
       {content && <p>{content}</p>}
       {

@@ -66,7 +66,7 @@ function AppLayout() {
                 )}
               </div>
               <div className="bg-neutral-200 h-full w-full col-span-2 min-[1024px]:col-span-1 hidden min-[640px]:block">
-                <WrappedComponent />
+                <WrappedComponent {...props} chatId={chatId} user={user}/>
               </div>
               <div className="h-full text-stone-50 hidden min-[1024px]:block bg-neutral-900">
                 <Profile user={user} />

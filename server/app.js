@@ -15,10 +15,14 @@ import { getSockets } from "./utils/helper.js";
 import { Message } from "./models/message.model.js";
 import cors from "cors";
 import {v2 as cloudinary} from 'cloudinary'
+import { corsOptions } from "./config/corsConfig.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 const app = express();
 const server = new createServer(app);
-const io = new Server(server);
+const io = new Server(server,{
+  cors: corsOptions,
+});
 
 dotenv.config();
 const port = 3000 || process.env.PORT;
@@ -31,23 +35,23 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
-app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:4173"],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-}))
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use(cookieParser());
+
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/admin", adminRouter);
 
+io.use((socket, next) => { 
+  cookieParser()(socket.request, socket.request.res, async (err) => {
+    await socketAuthenticator(err, socket, next)
+  })
+})
+
 io.on("connection", (socket) => {
-  const user = {
-    _id: "skdf",
-    name: "nambo",
-  };
+  const user = socket.user;
   userSocketIds.set(user._id.toString(), socket.id);
   console.log(userSocketIds);
   console.log(`A user is connected with ${socket.id}`);
@@ -67,6 +71,9 @@ io.on("connection", (socket) => {
       sender: user._id,
       chat: chatId,
     };
+
+    console.log(`Emitting: ${messageForRealTime}`)
+
     const memberSocketIDs = getSockets(members); // here we have written this so that we can send messages to different users that are connected to socket with the help of their socketIDs
     io.to(memberSocketIDs).emit(NEW_MESSAGE, {
       chatId,
