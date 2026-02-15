@@ -10,6 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducer/misc";
 import { useErrors } from "../../hooks/hook";
 import { getSocket } from "../../utils/socket";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../utils/events";
+import { useSocketEvents } from "6pp";
+import { useCallback } from "react";
+import { incrementNotification } from "../../redux/reducer/chat.slice";
 
 function AppLayout() {
   return function (WrappedComponent) {
@@ -30,6 +34,20 @@ function AppLayout() {
         console.log("Delete chat", _id, groupChat);
       };
       const handleMobileClose = () => dispatch(setIsMobile(false));
+
+      const newMessageAlertHandler = useCallback(() => {
+        dispatch(incrementNotification());
+      }, []);
+      
+      const newRequestHandler = useCallback(() => {}, []);
+
+      const eventHandler = { 
+        [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
+        [NEW_REQUEST]: newRequestHandler,
+      };
+
+      useSocketEvents(socket, eventHandler);
+
       return (
         <>
           <Title />
@@ -66,7 +84,7 @@ function AppLayout() {
                 )}
               </div>
               <div className="bg-neutral-200 h-full w-full col-span-2 min-[1024px]:col-span-1 hidden min-[640px]:block">
-                <WrappedComponent {...props} chatId={chatId} user={user}/>
+                <WrappedComponent {...props} chatId={chatId} user={user} />
               </div>
               <div className="h-full text-stone-50 hidden min-[1024px]:block bg-neutral-900">
                 <Profile user={user} />

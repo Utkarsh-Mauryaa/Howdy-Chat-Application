@@ -24,6 +24,8 @@ const io = new Server(server,{
   cors: corsOptions,
 });
 
+app.set("io", io); // new thing that i learnt
+
 dotenv.config();
 const port = 3000 || process.env.PORT;
 export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "skdjfksjfne";

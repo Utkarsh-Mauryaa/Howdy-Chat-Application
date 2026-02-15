@@ -7,28 +7,34 @@ import { IoMenuOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { lazy, Suspense } from "react";
-import { Backdrop, Tooltip } from "@mui/material";
+import { Backdrop, Badge, Tooltip } from "@mui/material";
 import axios from "axios";
 import { server } from "../../utils/config";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "../../redux/reducer/auth";
-import { setIsMobile, setIsNotification, setIsSearch } from "../../redux/reducer/misc";
+import {
+  setIsMobile,
+  setIsNotification,
+  setIsSearch,
+} from "../../redux/reducer/misc";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const Notifications = lazy(() => import("../specific/Notifications"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 const Header = () => {
-  const dispatch = useDispatch()
-  const { isSearch, isNotification } = useSelector(state => state.misc)
+  const dispatch = useDispatch();
+  const { isSearch, isNotification } = useSelector((state) => state.misc);
+  const { notificationCount } = useSelector((state) => state.chat);
   const [isNewGroup, setIsNewGroup] = useState(false);
   const navigate = useNavigate();
+
   const handleMobile = () => {
-    dispatch(setIsMobile(true))
+    dispatch(setIsMobile(true));
   };
   const openSearchDialog = () => {
-    dispatch(setIsSearch(true))
+    dispatch(setIsSearch(true));
   };
   const openNewGroup = () => {
     setIsNewGroup((prev) => !prev);
@@ -37,7 +43,7 @@ const Header = () => {
     navigate("/groups");
   };
   const openNotifications = () => {
-    dispatch(setIsNotification(true))
+    dispatch(setIsNotification(true));
   };
   const logoutHandler = async () => {
     try {
@@ -83,10 +89,19 @@ const Header = () => {
           </Tooltip>
 
           <Tooltip title={"Notifications"}>
-            <IoMdNotifications
-              onClick={openNotifications}
-              className="h-[22px] w-[25px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-            />
+            {notificationCount ? (
+              <Badge badgeContent={2}>
+                <IoMdNotifications
+                  onClick={openNotifications}
+                  className="h-[22px] w-[25px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
+                />
+              </Badge>
+            ) : (
+              <IoMdNotifications
+                onClick={openNotifications}
+                className="h-[22px] w-[25px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
+              />
+            )}
           </Tooltip>
 
           <Tooltip title={"Log out"}>

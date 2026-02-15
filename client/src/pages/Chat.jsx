@@ -1,16 +1,16 @@
-import { useSocketEvents, useInfiniteScrollTop } from "6pp";
+import { useInfiniteScrollTop, useSocketEvents } from "6pp";
 import { IconButton, Skeleton } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { IoMdAttach, IoMdSend } from "react-icons/io";
+import { useDispatch } from "react-redux";
 import FileMenu from "../components/dialog/FileMenu";
 import AppLayout from "../components/layout/AppLayout";
 import Message from "../components/shared/Message";
 import { useErrors } from "../hooks/hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
+import { setIsFileMenu } from "../redux/reducer/misc";
 import { NEW_MESSAGE } from "../utils/events";
 import { getSocket } from "../utils/socket";
-import { useDispatch } from "react-redux";
-import { setIsFileMenu } from "../redux/reducer/misc";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -127,7 +127,7 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
         </div>
       </form>
-      <FileMenu anchorE1={fileMenuAnchor}/>
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}/>
     </>
   );
 };

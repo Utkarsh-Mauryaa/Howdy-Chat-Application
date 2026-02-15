@@ -1,6 +1,6 @@
 import {
   ALERT,
-  NEW_ATTACHMENT,
+  NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHATS,
 } from "../constants/events.js";
@@ -8,7 +8,11 @@ import { tryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chat.model.js";
 import { Message } from "../models/message.model.js";
 import User from "../models/user.model.js";
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
+import {
+  deleteFilesFromCloudinary,
+  emitEvent,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import { getOtherMember } from "../utils/helper.js";
 import { ErrorHandler } from "../utils/utility.js";
 
@@ -201,24 +205,24 @@ export const sendAttachments = tryCatch(async (req, res, next) => {
   if (files.length < 1)
     return next(new ErrorHandler("Please provide attachments", 400));
 
-  const attachments = [];
-  const messageForRealTime = {
-    content: "",
-    attachments,
-    sender: {
-      _id: me._id,
-      name: me.name,
-    },
-    chat: chatId,
-  };
+  const attachments = await uploadFilesToCloudinary(files);
+  console.log("attach", attachments)
   const messageForDB = {
     content: "",
     attachments,
     sender: me._id,
     chat: chatId,
   };
+  const messageForRealTime = {
+    ...messageForDB,
+    sender: {
+      _id: me._id,
+      name: me.name,
+    },
+  };
+
   const message = await Message.create(messageForDB);
-  emitEvent(req, NEW_ATTACHMENT, chat.members, {
+  emitEvent(req, NEW_MESSAGE, chat.members, {
     message: messageForRealTime,
     chatId,
   });
@@ -338,7 +342,7 @@ export const getMessages = tryCatch(async (req, res, next) => {
 
   const [messages, totalMessages] = await Promise.all([
     Message.find({ chat: chatId })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 }) // Changed to descending order (-1)
       .skip(skip)
       .limit(messagesPerPage)
       .populate("sender", "name")
@@ -346,10 +350,12 @@ export const getMessages = tryCatch(async (req, res, next) => {
 
     Message.countDocuments({ chat: chatId }),
   ]);
+  
   const totalPages = Math.ceil(totalMessages / messagesPerPage);
+  
   return res.status(200).json({
     success: true,
-    messages,
-    totalPages
+    messages: messages.reverse(), // Reverse to show oldest first in the array
+    totalPages,
   });
 });
