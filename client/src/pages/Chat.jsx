@@ -11,6 +11,8 @@ import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { setIsFileMenu } from "../redux/reducer/misc";
 import { NEW_MESSAGE } from "../utils/events";
 import { getSocket } from "../utils/socket";
+import { useEffect } from "react";
+import { removeMessagesAlert } from "../redux/reducer/chat.slice";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -23,7 +25,7 @@ const Chat = ({ chatId, user }) => {
 
   const [page, setPage] = useState(1);
 
-  const[fileMenuAnchor, setFileMenuAnchor] = useState(null);
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
 
   const chatDetails = useChatDetailsQuery({ chatId }, { skip: !chatId });
 
@@ -46,7 +48,7 @@ const Chat = ({ chatId, user }) => {
 
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
-    setFileMenuAnchor(e.currentTarget)
+    setFileMenuAnchor(e.currentTarget);
   };
 
   const submitHandler = (e) => {
@@ -59,9 +61,20 @@ const Chat = ({ chatId, user }) => {
     setMessage("");
   };
 
+  useEffect(() => {
+    dispatch(removeMessagesAlert(chatId))
+    return () => {
+      setMessages([]);
+      setMessage([]);
+      setOldMessages([]);
+      setPage(1);
+    };
+  }, [chatId]);
+
   const newMessagesHandler = useCallback((data) => {
+    if (data.chatId !== chatId) return;
     setMessages((prev) => [...prev, data.message]);
-  }, []);
+  }, [chatId]);
 
   const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
 
@@ -127,7 +140,7 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
         </div>
       </form>
-      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}/>
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
     </>
   );
 };

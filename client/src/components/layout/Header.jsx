@@ -7,7 +7,7 @@ import { IoMenuOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { lazy, Suspense } from "react";
-import { Backdrop, Badge, Tooltip } from "@mui/material";
+import { Backdrop, Badge, IconButton, Tooltip } from "@mui/material";
 import axios from "axios";
 import { server } from "../../utils/config";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import {
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducer/misc";
+import { resetNotification } from "../../redux/reducer/chat.slice";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const Notifications = lazy(() => import("../specific/Notifications"));
@@ -44,6 +45,7 @@ const Header = () => {
   };
   const openNotifications = () => {
     dispatch(setIsNotification(true));
+    dispatch(resetNotification())
   };
   const logoutHandler = async () => {
     try {
@@ -67,42 +69,30 @@ const Header = () => {
           />
         </Tooltip>
         <div className="flex gap-8 mr-4">
-          <Tooltip title={"Search a chat"}>
-            <IoMdSearch
-              onClick={openSearchDialog}
-              className="h-[25px] w-[22px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-            />
-          </Tooltip>
+          <IconBtn
+            title={"Search a chat"}
+            icon={<IoMdSearch />}
+            onClick={openSearchDialog}
+          />
 
-          <Tooltip title={"Add someone"}>
-            <IoAddOutline
-              onClick={openNewGroup}
-              className="h-[25px] w-[22px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-            />
-          </Tooltip>
+          <IconBtn
+            title={"Add someone"}
+            icon={<IoAddOutline />}
+            onClick={openNewGroup}
+          />
 
-          <Tooltip title={"See Groups"}>
-            <MdGroupAdd
-              onClick={navigateToGroup}
-              className="h-[25px] w-[22px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-            />
-          </Tooltip>
+          <IconBtn
+            title={"See Groups"}
+            icon={<MdGroupAdd />}
+            onClick={navigateToGroup}
+          />
 
-          <Tooltip title={"Notifications"}>
-            {notificationCount ? (
-              <Badge badgeContent={2}>
-                <IoMdNotifications
-                  onClick={openNotifications}
-                  className="h-[22px] w-[25px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-                />
-              </Badge>
-            ) : (
-              <IoMdNotifications
-                onClick={openNotifications}
-                className="h-[22px] w-[25px] mt-3 min-[640px]:h-[30px] min-[640px]:w-[25px] min-[640px]:mt-2 cursor-pointer"
-              />
-            )}
-          </Tooltip>
+          <IconBtn
+            title={"Notifications"}
+            icon={<IoMdNotifications />}
+            onClick={openNotifications}
+            value={notificationCount}
+          />
 
           <Tooltip title={"Log out"}>
             <IoExit
@@ -128,6 +118,19 @@ const Header = () => {
         </Suspense>
       )}
     </>
+  );
+};
+
+const IconBtn = ({ title, icon, onClick, value }) => {
+  return (
+    <Tooltip title={title}>
+      <IconButton color="inherit" size="large" onClick={onClick}>
+        {value ? <Badge badgeContent={value} color="error" sx={{
+          position:"relative",
+          top: "2px"
+        }}>{icon}</Badge> : icon}
+      </IconButton>
+    </Tooltip>
   );
 };
 

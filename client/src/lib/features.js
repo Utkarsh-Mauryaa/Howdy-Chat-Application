@@ -11,10 +11,12 @@ const fileFormat = (url = "") => {
 };
 
 const transformImage = (url = "", width = 100) => {
-
-    const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`)
-
-    return newUrl
+    return url
 }
 
-export { fileFormat, transformImage }
+const getOrSaveFromStorage = ({key, value, get}) => {
+    if(get) return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;
+    else localStorage.setItem(key, JSON.stringify(value));
+}
+
+export { fileFormat, transformImage, getOrSaveFromStorage }

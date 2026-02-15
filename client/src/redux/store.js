@@ -8,8 +8,8 @@ const store = configureStore({
   reducer: {
     [authSlice.name]: authSlice.reducer,
     [miscSlice.name]: miscSlice.reducer,
+    [chatSlice.name]: chatSlice.reducer,
     [api.reducerPath]: api.reducer,
-    [chatSlice.reducerPath]: chatSlice.reducer,
   },
   middleware: (defaultMiddlware) => [...defaultMiddlware(), api.middleware]
 });

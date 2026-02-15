@@ -16,7 +16,7 @@ export const SignUp = tryCatch(async (req, res, next) => {
 
   const result = await uploadFilesToCloudinary([file]);
   const avatar = {
-    publicId: result[0].public_id,
+    publicId: result[0].publicId,
     url: result[0].url,
   };
   const user = await User.create({
