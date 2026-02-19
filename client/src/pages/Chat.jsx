@@ -9,15 +9,26 @@ import Message from "../components/shared/Message";
 import { useErrors } from "../hooks/hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { setIsFileMenu } from "../redux/reducer/misc";
-import { NEW_MESSAGE } from "../utils/events";
+import {
+  ALERT,
+  MEMBER_REMOVED,
+  NEW_MESSAGE,
+  START_TYPING,
+  STOP_TYPING,
+} from "../utils/events";
 import { getSocket } from "../utils/socket";
 import { useEffect } from "react";
 import { removeMessagesAlert } from "../redux/reducer/chat.slice";
+import { TypingLoader } from "../components/layout/Loaders";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const socket = getSocket();
   const dispatch = useDispatch();
+  const bottomRef = useRef(null);
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
 
@@ -26,6 +37,10 @@ const Chat = ({ chatId, user }) => {
   const [page, setPage] = useState(1);
 
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+
+  const [IamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeout = useRef(null);
 
   const chatDetails = useChatDetailsQuery({ chatId }, { skip: !chatId });
 
@@ -46,6 +61,21 @@ const Chat = ({ chatId, user }) => {
 
   const members = chatDetails?.data?.chat?.members;
 
+  const messageOnChange = (e) => {
+    setMessage(e.target.value);
+    if (!IamTyping) {
+      socket.emit(START_TYPING, { members, chatId });
+      setIamTyping(true);
+    }
+
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+    typingTimeout.current = setTimeout(() => {
+      socket.emit(STOP_TYPING, { members, chatId });
+      setIamTyping(false);
+    }, [2000]);
+  };
+
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
@@ -62,7 +92,7 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
-    dispatch(removeMessagesAlert(chatId))
+    dispatch(removeMessagesAlert(chatId));
     return () => {
       setMessages([]);
       setMessage([]);
@@ -71,12 +101,67 @@ const Chat = ({ chatId, user }) => {
     };
   }, [chatId]);
 
-  const newMessagesHandler = useCallback((data) => {
-    if (data.chatId !== chatId) return;
-    setMessages((prev) => [...prev, data.message]);
-  }, [chatId]);
+  useEffect(() => {
+    if (bottomRef.current)
+      bottomRef.current.scrollIntoView({ behaviour: "smooth" });
+  }, [messages]);
 
-  const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
+  const newMessagesListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId],
+  );
+
+  const startTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      setUserTyping(true);
+    },
+    [chatId],
+  );
+
+  const stopTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      setUserTyping(false);
+    },
+    [chatId],
+  );
+
+  const alertListener = useCallback(
+    (content) => {
+      const messageForAlert = {
+        content,
+        sender: {
+          _id: "sdfknksmdfkm",
+          name: "Admin",
+        },
+        chat: chatId,
+        createdAt: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, messageForAlert]);
+    },
+    [chatId],
+  );
+
+  const memberRemovedListener = useCallback((data) => {
+    console.log(data.chatId)
+    if (data.chatId === chatId) {
+      toast.error(data.message || "You have been removed from this group.");
+      navigate("/");
+    }
+  },[chatId, navigate]
+);
+
+  const eventHandler = {
+    [ALERT]: alertListener,
+    [NEW_MESSAGE]: newMessagesListener,
+    [START_TYPING]: startTypingListener,
+    [STOP_TYPING]: stopTypingListener,
+    [MEMBER_REMOVED]: memberRemovedListener,
+  };
 
   useSocketEvents(socket, eventHandler);
 
@@ -87,17 +172,22 @@ const Chat = ({ chatId, user }) => {
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
-    <>
+    <div className="flex flex-col h-full">
       <div
         ref={containerRef}
-        className="flex flex-col bg-neutral-200 overflow-x-hidden overflow-y-auto p-4 h-[620px]"
+        className="flex-1 flex flex-col bg-neutral-200 overflow-x-hidden overflow-y-auto p-4"
       >
         {allMessages.map((i) => (
           <Message key={i._id} message={i} user={user} />
         ))}
+        <span ref={bottomRef} />
       </div>
-      <form className="h-[100px]" onSubmit={submitHandler}>
-        <div className="flex">
+      {userTyping && <TypingLoader />}
+      <form
+        className="flex-shrink-0 p-4 bg-white border-t border-neutral-300"
+        onSubmit={submitHandler}
+      >
+        <div className="flex items-center gap-2">
           <IconButton
             sx={{
               backgroundColor: "#5a9dd7ff",
@@ -105,21 +195,18 @@ const Chat = ({ chatId, user }) => {
               "&:hover": {
                 bgcolor: "#3794e6ff",
               },
-              margin: "7px",
-              height: "40px",
-              position: "relative",
-              top: "6px",
+              height: "48px",
+              width: "48px",
             }}
             onClick={handleFileOpen}
           >
             <IoMdAttach />
           </IconButton>
-
           <input
-            className="w-full h-full border-2 border-neutral-500 outline-none rounded-2xl p-5"
+            className="flex-1 h-12 border-2 border-neutral-500 outline-none rounded-2xl px-5"
             placeholder="Type your message here...."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={messageOnChange}
           />
 
           <IconButton
@@ -130,10 +217,8 @@ const Chat = ({ chatId, user }) => {
               "&:hover": {
                 bgcolor: "error.dark",
               },
-              margin: "7px",
-              height: "40px",
-              position: "relative",
-              top: "6px",
+              height: "48px",
+              width: "48px",
             }}
           >
             <IoMdSend />
@@ -141,7 +226,7 @@ const Chat = ({ chatId, user }) => {
         </div>
       </form>
       <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
-    </>
+    </div>
   );
 };
 

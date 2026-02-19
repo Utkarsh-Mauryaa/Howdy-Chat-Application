@@ -1,5 +1,6 @@
 import {
   ALERT,
+  MEMBER_REMOVED,
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHATS,
@@ -119,6 +120,7 @@ export const addMembers = tryCatch(async (req, res, next) => {
     chat.members,
     `${allUsersName} has been added in the group.`,
   );
+  emitEvent(req, REFETCH_CHATS, chat.members);
   return res.status(200).json({
     success: true,
     message: "Members added successfully!",
@@ -142,6 +144,8 @@ export const removeMembers = tryCatch(async (req, res, next) => {
   if (chat.members.length <= 3)
     return next(new ErrorHandler("Group must have at least 3 members", 400));
 
+  const allChatMembers = chat.members.map((i) => i.toString())
+
   chat.members = chat.members.filter(
     (member) => member.toString() !== userId.toString(),
   );
@@ -152,7 +156,15 @@ export const removeMembers = tryCatch(async (req, res, next) => {
     chat.members,
     `${removedUser.name} has been removed from the group.`,
   );
-  emitEvent(req, REFETCH_CHATS, chat.members);
+  
+  emitEvent(
+    req,
+    "MEMBER_REMOVED",
+    [userId],
+    { chatId, message: "You have been removed from this group." }
+  );
+
+  emitEvent(req, REFETCH_CHATS, allChatMembers);
   return res.status(200).json({
     success: true,
     message: "Member removed successfully!",
@@ -263,6 +275,9 @@ export const getChatDetails = tryCatch(async (req, res, next) => {
 
 export const renameGroup = tryCatch(async (req, res, next) => {
   const chatId = req.params.id;
+
+  console.log(chatId)
+
   const { name } = req.body;
 
   const chat = await Chat.findById(chatId);

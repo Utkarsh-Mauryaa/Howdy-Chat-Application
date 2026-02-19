@@ -9,18 +9,23 @@ import cookieParser from "cookie-parser";
 import { createUser } from "./seeders/user.seed.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
+import {
+  NEW_MESSAGE,
+  NEW_MESSAGE_ALERT,
+  START_TYPING,
+  STOP_TYPING,
+} from "./constants/events.js";
 import { v4 as uuid } from "uuid";
 import { getSockets } from "./utils/helper.js";
 import { Message } from "./models/message.model.js";
 import cors from "cors";
-import {v2 as cloudinary} from 'cloudinary'
+import { v2 as cloudinary } from "cloudinary";
 import { corsOptions } from "./config/corsConfig.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
 
 const app = express();
 const server = new createServer(app);
-const io = new Server(server,{
+const io = new Server(server, {
   cors: corsOptions,
 });
 
@@ -35,22 +40,21 @@ connectDB();
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-})
-app.use(cors(corsOptions))
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/admin", adminRouter);
 
-io.use((socket, next) => { 
+io.use((socket, next) => {
   cookieParser()(socket.request, socket.request.res, async (err) => {
-    await socketAuthenticator(err, socket, next)
-  })
-})
+    await socketAuthenticator(err, socket, next);
+  });
+});
 
 io.on("connection", (socket) => {
   const user = socket.user;
@@ -74,7 +78,7 @@ io.on("connection", (socket) => {
       chat: chatId,
     };
 
-    console.log(`Emitting: ${messageForRealTime}`)
+    console.log(`Emitting: ${messageForRealTime}`);
 
     const memberSocketIDs = getSockets(members); // here we have written this so that we can send messages to different users that are connected to socket with the help of their socketIDs
     io.to(memberSocketIDs).emit(NEW_MESSAGE, {
@@ -89,6 +93,19 @@ io.on("connection", (socket) => {
     }
     console.log("New Message", messageForRealTime);
   });
+
+  socket.on(START_TYPING, ({ members, chatId }) => {
+    console.log("start-typing", chatId);
+    const membersSocketIds = getSockets(members);
+    socket.to(membersSocketIds).emit(START_TYPING, { chatId });
+  });
+
+  socket.on(STOP_TYPING, ({ members, chatId }) => {
+    console.log('stop-typing', chatId)
+    const membersSocketIds = getSockets(members);
+    socket.to(membersSocketIds).emit(STOP_TYPING, { chatId });
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected");
     userSocketIds.delete(user._id.toString());

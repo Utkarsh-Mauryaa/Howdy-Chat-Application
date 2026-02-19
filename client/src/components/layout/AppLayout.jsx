@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducer/misc";
 import { useErrors } from "../../hooks/hook";
 import { getSocket } from "../../utils/socket";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../utils/events";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from "../../utils/events";
 import { useSocketEvents } from "6pp";
 import { useCallback } from "react";
 import { incrementNotification, setNewMessagesAlert } from "../../redux/reducer/chat.slice";
@@ -47,13 +47,18 @@ function AppLayout() {
         dispatch(setNewMessagesAlert(data));
       }, [chatId]);
 
-      const newRequestHandler = useCallback(() => {
+      const newRequestListener = useCallback(() => {
         dispatch(incrementNotification());
+      }, []);
+
+      const refetchListener = useCallback(() => {
+        refetch();
       }, []);
 
       const eventHandler = {
         [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
-        [NEW_REQUEST]: newRequestHandler,
+        [NEW_REQUEST]: newRequestListener,
+        [REFETCH_CHATS]: refetchListener,
       };
 
       useSocketEvents(socket, eventHandler);
@@ -79,8 +84,8 @@ function AppLayout() {
               </Drawer>
             )}
 
-            <div className="flex-grow grid grid-cols-[1.2fr_2fr_1fr] overflow-hidden">
-              <div className="h-full overflow-auto col-span-3 min-[640px]:col-span-1">
+            <div className="flex-grow grid grid-cols-[1.2fr_2fr_1fr] overflow-hidden h-full">
+              <div className="h-full overflow-y-auto col-span-3 min-[640px]:col-span-1">
                 {isLoading ? (
                   <Skeleton />
                 ) : (
@@ -93,10 +98,10 @@ function AppLayout() {
                   />
                 )}
               </div>
-              <div className="bg-neutral-200 h-full w-full col-span-2 min-[1024px]:col-span-1 hidden min-[640px]:block">
+              <div className="bg-neutral-200 h-full w-full col-span-2 min-[1024px]:col-span-1 hidden min-[640px]:block overflow-hidden">
                 <WrappedComponent {...props} chatId={chatId} user={user} />
               </div>
-              <div className="h-full text-stone-50 hidden min-[1024px]:block bg-neutral-900">
+              <div className="h-full text-stone-50 hidden min-[1024px]:block bg-neutral-900 overflow-y-auto">
                 <Profile user={user} />
               </div>
             </div>

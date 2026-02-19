@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../utils/config";
 
+
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1` }),
@@ -73,6 +74,62 @@ const api = createApi({
         body: data,
       }),
     }),
+    myGroups: builder.query({
+      query: () => ({
+        url: "/chat/my/groups",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
+    availableFriends: builder.query({
+      query: (chatId) => {
+
+        let url = `/user/friends`;
+        if (chatId) url += `?chatId=${chatId}`;
+
+        return {
+          url,
+          credentials: "include",
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+    newGroup: builder.mutation({
+      query: ({name, members}) => ({
+        url: "/chat/new",
+        method: "POST",
+        credentials: "include",
+        body: {name, members},
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    renameGroup: builder.mutation({
+      query: ({chatId, name}) => ({
+        url: `/chat/${chatId}`,
+        method: "PUT",
+        credentials: "include",
+        body: {name},
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    removeGroupMember: builder.mutation({
+      query: ({chatId, userId}) => ({
+        url: `/chat/removeMember`,
+        method: "DELETE",
+        credentials: "include",
+        body: {chatId, userId},
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    addGroupMembers: builder.mutation({
+      query: ({members, chatId}) => ({
+        url: `/chat/addMembers`,
+        method: "PUT",
+        credentials: "include",
+        body: {members, chatId},
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -85,5 +142,11 @@ export const {
   useAcceptFriendRequestMutation,
   useChatDetailsQuery,
   useGetMessagesQuery,
-  useSendAttachmentsMutation
+  useSendAttachmentsMutation,
+  useMyGroupsQuery,
+  useAvailableFriendsQuery,
+  useNewGroupMutation,
+  useRenameGroupMutation,
+  useRemoveGroupMemberMutation,
+  useAddGroupMembersMutation
 } = api;

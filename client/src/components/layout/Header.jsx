@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "../../redux/reducer/auth";
 import {
   setIsMobile,
+  setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducer/misc";
@@ -26,9 +27,9 @@ const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 const Header = () => {
   const dispatch = useDispatch();
-  const { isSearch, isNotification } = useSelector((state) => state.misc);
+  const { isSearch, isNotification, isNewGroup } = useSelector((state) => state.misc);
   const { notificationCount } = useSelector((state) => state.chat);
-  const [isNewGroup, setIsNewGroup] = useState(false);
+
   const navigate = useNavigate();
 
   const handleMobile = () => {
@@ -38,7 +39,7 @@ const Header = () => {
     dispatch(setIsSearch(true));
   };
   const openNewGroup = () => {
-    setIsNewGroup((prev) => !prev);
+    dispatch(setIsNewGroup(true))
   };
   const navigateToGroup = () => {
     navigate("/groups");

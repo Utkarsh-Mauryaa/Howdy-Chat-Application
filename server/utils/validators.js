@@ -91,7 +91,7 @@ const chatIdValidator = () => [
 ];
 
 const renameValidator = () => [
-    body("chatId")
+    param("id")
         .notEmpty()
         .withMessage("Please enter chat ID"),
     body("name")
