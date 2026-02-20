@@ -3,6 +3,7 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   IconButton,
   Stack,
@@ -11,7 +12,12 @@ import {
 } from "@mui/material";
 import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { IoAddOutline, IoMenuOutline } from "react-icons/io5";
-import { MdDeleteOutline, MdDone, MdEdit, MdKeyboardBackspace } from "react-icons/md";
+import {
+  MdDeleteOutline,
+  MdDone,
+  MdEdit,
+  MdKeyboardBackspace,
+} from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LayoutLoader } from "../components/layout/Loaders";
@@ -21,9 +27,10 @@ import { Link } from "../components/styles/StyledComponents";
 import { useAsyncMutation, useErrors } from "../hooks/hook";
 import {
   useChatDetailsQuery,
+  useDeleteChatMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
-  useRenameGroupMutation
+  useRenameGroupMutation,
 } from "../redux/api/api";
 import { setIsAddMember } from "../redux/reducer/misc";
 import { MEMBER_REMOVED } from "../utils/events";
@@ -56,6 +63,10 @@ const Groups = () => {
 
   const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
     useRemoveGroupMemberMutation,
+  );
+
+  const [deleteGroup, isLoadingDeleteGroup] = useAsyncMutation(
+    useDeleteChatMutation,
   );
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -97,6 +108,16 @@ const Groups = () => {
     };
   }, [groupDetails.data]);
 
+  // Clear state when no group is selected
+  useEffect(() => {
+    if (!chatId) {
+      setGroupName("");
+      setGroupNameUpdatedValue("");
+      setMembers([]);
+      setIsEdit(false);
+    }
+  }, [chatId]);
+
   const navigateBack = () => {
     navigate("/");
   };
@@ -115,7 +136,6 @@ const Groups = () => {
 
   const openConfirmDeleteHandler = () => {
     setConfirmDeleteDialog(true);
-    console.log("Delete group");
   };
   const closeConfirmDeleteHandler = () => {
     setConfirmDeleteDialog(false);
@@ -124,8 +144,15 @@ const Groups = () => {
     dispatch(setIsAddMember(true));
   };
   const deleteHandler = () => {
-    console.log("Delete");
+    deleteGroup("Deleting Group...", chatId);
     closeConfirmDeleteHandler();
+    // Clear the group details state immediately
+    setGroupName("");
+    setGroupNameUpdatedValue("");
+    setMembers([]);
+    setIsEdit(false);
+    // Navigate to groups page without query params
+    navigate('/groups');
   };
   const removeMemberHandler = (userId) => {
     removeMember("Removing Member...", { chatId, userId });
@@ -253,19 +280,21 @@ const Groups = () => {
             {GroupName}
             <p className="m-4 text-center">Members</p>
             <div className="overflow-auto m-8 h-[400px] w-[300px] min-[800px]:w-[400px] m-auto">
-              {members.map((i) => {
-                return (
-                  <UserItem
-                    user={i}
-                    key={i._id}
-                    isAdded
-                    styling={
-                      "p-2 rounded-md shadow-[0_-0.5px_6px_-1px_rgba(0,0,0,0.1)]"
-                    }
-                    handler={removeMemberHandler}
-                  />
-                );
-              })}
+              
+                {isLoadingRemoveMember? <CircularProgress/>:members.map((i) => {
+                  return (
+                    <UserItem
+                      user={i}
+                      key={i._id}
+                      isAdded
+                      styling={
+                        "p-2 rounded-md shadow-[0_-0.5px_6px_-1px_rgba(0,0,0,0.1)]"
+                      }
+                      handler={removeMemberHandler}
+                    />
+                  );
+                })}
+              
             </div>
             {ButtonGroup}
           </>

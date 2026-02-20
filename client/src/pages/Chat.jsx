@@ -73,7 +73,7 @@ const Chat = ({ chatId, user }) => {
     typingTimeout.current = setTimeout(() => {
       socket.emit(STOP_TYPING, { members, chatId });
       setIamTyping(false);
-    }, [2000]);
+    }, 2000);
   };
 
   const handleFileOpen = (e) => {
@@ -106,6 +106,13 @@ const Chat = ({ chatId, user }) => {
       bottomRef.current.scrollIntoView({ behaviour: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    if (!chatDetails.isLoading && chatDetails.isError) {
+      toast.error("Chat not found or you are not a member.");
+      navigate("/");
+    }
+  }, [chatDetails.isLoading, chatDetails.isError, navigate]);
+
   const newMessagesListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
@@ -136,7 +143,7 @@ const Chat = ({ chatId, user }) => {
         content,
         sender: {
           _id: "sdfknksmdfkm",
-          name: "Admin",
+          name: "",
         },
         chat: chatId,
         createdAt: new Date().toISOString(),
@@ -146,21 +153,11 @@ const Chat = ({ chatId, user }) => {
     [chatId],
   );
 
-  const memberRemovedListener = useCallback((data) => {
-    console.log(data.chatId)
-    if (data.chatId === chatId) {
-      toast.error(data.message || "You have been removed from this group.");
-      navigate("/");
-    }
-  },[chatId, navigate]
-);
-
   const eventHandler = {
     [ALERT]: alertListener,
     [NEW_MESSAGE]: newMessagesListener,
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener,
-    [MEMBER_REMOVED]: memberRemovedListener,
   };
 
   useSocketEvents(socket, eventHandler);

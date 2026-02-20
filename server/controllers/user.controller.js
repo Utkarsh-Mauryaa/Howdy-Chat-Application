@@ -61,23 +61,34 @@ export const Logout = tryCatch(async (req, res) => {
 
 export const searchUser = tryCatch(async (req, res, next) => {
   const { name } = req.query;
-  const myChats = await Chat.find({ groupChat: true, members: req.userId });
 
-  const myFriendsAndMe = myChats.map((chat) => chat.members).flat();
-  const allUsersExceptMeAndFriends = await User.find({
-    _id: { $nin: myFriendsAndMe },
-    name: { $regex: name, $options: "i" }, // options i for case insensitive
-  }).lean();
-  const users = allUsersExceptMeAndFriends.map(({ _id, name, avatar }) => ({
-    _id,
-    name,
-    avatar: avatar.url,
-  }));
+  const privateChats = await Chat.find({
+    groupChat: false,
+    members: req.userId,
+  }).select("members");
+
+  const friendIds = privateChats
+    .map((chat) => chat.members)
+    .flat()
+    .filter(
+      (memberId) => memberId.toString() !== req.userId.toString()
+    );
+
+  const users = await User.find({
+    _id: { $nin: [...friendIds, req.userId] },
+    name: { $regex: name, $options: "i" },
+  }).select("_id name avatar");
+
   res.status(200).json({
     success: true,
-    users,
+    users: users.map((user) => ({
+      _id: user._id,
+      name: user.name,
+      avatar: user.avatar?.url,
+    })),
   });
 });
+
 
 export const sendFriendRequest = tryCatch(async (req, res, next) => {
   const { receiverId } = req.body;

@@ -19,7 +19,6 @@ const dispatch = useDispatch();
 
   const [selectedMembers, setSelectedMembers] = useState([]);
 
-
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
       prev.includes(id)
@@ -32,9 +31,11 @@ const dispatch = useDispatch();
     addMembers("Adding Members...", {members: selectedMembers, chatId})
     closeHandler(); // will make afterwards when making backend
   };
+
   const closeHandler = () => {
     dispatch(setIsAddMember(false));
   };
+
   useErrors([{isError, error}])
   return (
     <Dialog open={isAddMember} onClose={closeHandler}>

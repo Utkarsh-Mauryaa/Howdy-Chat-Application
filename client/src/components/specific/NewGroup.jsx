@@ -10,10 +10,14 @@ import { useState } from "react";
 import { sampleUsers } from "../../utils/sampleData";
 import UserItem from "../shared/UserItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useAvailableFriendsQuery, useNewGroupMutation } from "../../redux/api/api";
+import {
+  useAvailableFriendsQuery,
+  useNewGroupMutation,
+} from "../../redux/api/api";
 import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import { setIsNewGroup } from "../../redux/reducer/misc";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const NewGroup = () => {
   const { isNewGroup } = useSelector((state) => state.misc);
@@ -21,7 +25,7 @@ const NewGroup = () => {
 
   const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
 
-  console.log(data)
+  console.log(data);
 
   const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
 
@@ -31,6 +35,12 @@ const NewGroup = () => {
       error,
     },
   ];
+
+  useEffect(() => {
+    if (!isNewGroup) {
+      setSelectedMembers([]);
+    }
+  }, [isNewGroup]);
 
   useErrors(errors);
 
@@ -48,7 +58,10 @@ const NewGroup = () => {
     if (!groupName.value) return toast.error("Group name is required");
     if (selectedMembers.length < 2)
       return toast.error("Select at least 2 members");
-    newGroup("Creating New Group....", { name: groupName.value, members: selectedMembers });
+    newGroup("Creating New Group....", {
+      name: groupName.value,
+      members: selectedMembers,
+    });
     closeHandler();
   };
   const closeHandler = () => {
@@ -80,7 +93,11 @@ const NewGroup = () => {
           )}
         </div>
         <div className="flex gap-4 m-auto p-2">
-          <Button sx={{ border: "1px solid #bae6fd" }} onClick={submitHandler} disabled={isLoadingNewGroup}>
+          <Button
+            sx={{ border: "1px solid #bae6fd" }}
+            onClick={submitHandler}
+            disabled={isLoadingNewGroup}
+          >
             Create
           </Button>
           <Button
