@@ -3,12 +3,16 @@ import { memo } from "react"
 import { fileFormat } from "../../lib/features";
 import RenderAttachment from "./RenderAttachment";
 import { Box } from "@mui/material";
+import {motion} from "framer-motion"
 const Message = ({ message, user }) => {
   const { sender, content, attachments = [], createdAt } = message
   const timeAgo = moment(createdAt).fromNow();
   console.log(attachments)
   return (
-    <div className={`p-2 bg-lime-400 rounded-xl border-2 border-slate-300 m-2 ${(sender?._id === user?._id) ? "self-end" : "self-start"}`}>
+    <motion.div 
+    initial={{opacity:0, x:"-100%"}}
+    whileInView={{opacity:1, x:0}}
+    className={`p-2 bg-lime-400 rounded-xl border-2 border-slate-300 m-2 ${(sender?._id === user?._id) ? "self-end" : "self-start"}`}>
       {(sender?._id !== user._id) && <p className="text-pink-600 font-semibold text-xs">{sender.name}</p>}
       {content && <p>{content}</p>}
       {
@@ -25,7 +29,7 @@ const Message = ({ message, user }) => {
         )
       }
       <p className="text-xs text-gray-500">{timeAgo}</p>
-    </div>
+    </motion.div>
   )
 }
 

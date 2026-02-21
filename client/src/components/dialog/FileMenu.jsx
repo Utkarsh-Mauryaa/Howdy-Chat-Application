@@ -54,13 +54,17 @@ const FileMenu = ({ anchorE1, chatId }) => {
       myForm.append("chatId", chatId);
       files.forEach((file) => myForm.append("files", file));
 
-      const res = await sendAttachments(myForm);
+      const res = await sendAttachments(myForm).unwrap();
 
-      if(res.data) toast.success(`${key} sent successfully!`, {id: toastId});
-      else toast.error(`Failed to send ${key}`, {id: toastId})
-
+      if (res.data) toast.success(`${key} sent successfully!`, { id: toastId });
+      else toast.error(`Failed to send ${key}`, { id: toastId });
     } catch (error) {
-      toast.error(error, { id: toastId });
+      const message =
+        typeof error?.data === "string"
+          ? error.data
+          : error?.data?.message || error?.error || `Failed to send ${key}`;
+
+      toast.error(message, { id: toastId });
     } finally {
       dispatch(setUploadingLoader(false));
     }

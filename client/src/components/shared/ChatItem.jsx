@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Link } from '../styles/StyledComponents'
 import AvatarCard from './AvatarCard'
-
+import { motion } from 'framer-motion'
 const ChatItem = ({
   avatar = [],
   name,
@@ -15,7 +15,11 @@ const ChatItem = ({
 }) => {
   return (
     <Link className='p-0' to={`/chat/${_id}`} onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}>
-      <div className={`${sameSender? "bg-rose-400":"bg-pink-200"} flex items-center p-4 gap-3 relative`}>
+      <motion.div 
+      initial={{opacity:0, y:"-100%"}}
+      whileInView={{opacity:1, y:0}}
+      transition={{delay: index*0.1}}
+      className={`${sameSender? "bg-rose-400":"bg-pink-200"} flex items-center p-4 gap-3 relative`}>
       <AvatarCard avatar={avatar}/>
       <div>
        <p>{name}</p>
@@ -35,7 +39,7 @@ const ChatItem = ({
       ml-auto
       `}
       />}
-      </div>
+      </motion.div>
     </Link>
   )
 }

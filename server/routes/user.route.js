@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/signup',singleAvatar, registerValidator(), validateHandler, SignUp);
 
-router.post('/signin', SignIn);
+router.post('/signin', loginValidator(), validateHandler, SignIn);
 
 router.use(isAuthenticated)
 

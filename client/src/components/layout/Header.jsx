@@ -1,25 +1,21 @@
-import { IoMdSearch } from "react-icons/io";
-import { IoAddOutline } from "react-icons/io5";
-import { MdGroupAdd } from "react-icons/md";
-import { IoMdNotifications } from "react-icons/io";
-import { IoExit } from "react-icons/io5";
-import { IoMenuOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { lazy, Suspense } from "react";
 import { Backdrop, Badge, IconButton, Tooltip } from "@mui/material";
 import axios from "axios";
-import { server } from "../../utils/config";
+import { lazy, Suspense } from "react";
 import toast from "react-hot-toast";
+import { IoMdNotifications, IoMdSearch } from "react-icons/io";
+import { IoAddOutline, IoExit, IoMenuOutline } from "react-icons/io5";
+import { MdGroupAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { userNotExists } from "../../redux/reducer/auth";
+import { resetNotification } from "../../redux/reducer/chat.slice";
 import {
   setIsMobile,
   setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducer/misc";
-import { resetNotification } from "../../redux/reducer/chat.slice";
+import { server } from "../../utils/config";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const Notifications = lazy(() => import("../specific/Notifications"));

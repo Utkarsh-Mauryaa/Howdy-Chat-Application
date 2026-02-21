@@ -7,7 +7,7 @@ import store from './redux/store.js'
 createRoot(document.getElementById('root')).render(
   
     <Provider store={store}>
-      <div>
+      <div onContextMenu={e => e.preventDefault()}>
       </div>
       <App />
     </Provider>

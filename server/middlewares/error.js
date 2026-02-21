@@ -12,7 +12,10 @@ export const errorMiddleware = (err, req, res, next) => {
     err.message = `Invalid format of ${err.path}`;
     err.statusCode = 400;
   }
-  console.log(err);
+  if(err.code === "LIMIT_FILE_SIZE") {
+    err.message = "File size should be less than 7MB";
+    err.statusCode = 400;
+  }
   return res.status(err.statusCode).json({
     success: false,
     message: err.message

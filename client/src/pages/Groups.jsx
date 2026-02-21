@@ -35,6 +35,7 @@ import {
 import { setIsAddMember } from "../redux/reducer/misc";
 import { MEMBER_REMOVED } from "../utils/events";
 import { getSocket } from "../utils/socket";
+import { motion } from "framer-motion";
 
 const ConfirmDeleteDialog = lazy(
   () => import("../components/dialog/ConfirmDeleteDialog"),
@@ -152,7 +153,7 @@ const Groups = () => {
     setMembers([]);
     setIsEdit(false);
     // Navigate to groups page without query params
-    navigate('/groups');
+    navigate("/groups");
   };
   const removeMemberHandler = (userId) => {
     removeMember("Removing Member...", { chatId, userId });
@@ -280,8 +281,10 @@ const Groups = () => {
             {GroupName}
             <p className="m-4 text-center">Members</p>
             <div className="overflow-auto m-8 h-[400px] w-[300px] min-[800px]:w-[400px] m-auto">
-              
-                {isLoadingRemoveMember? <CircularProgress/>:members.map((i) => {
+              {isLoadingRemoveMember ? (
+                <CircularProgress />
+              ) : (
+                members.map((i) => {
                   return (
                     <UserItem
                       user={i}
@@ -293,8 +296,8 @@ const Groups = () => {
                       handler={removeMemberHandler}
                     />
                   );
-                })}
-              
+                })
+              )}
             </div>
             {ButtonGroup}
           </>
@@ -337,8 +340,8 @@ const Groups = () => {
 const GroupList = ({ myGroups = [], chatId }) => (
   <Stack sx={{ overflow: "auto", height: "100vh" }}>
     {myGroups.length > 0 ? (
-      myGroups.map((group) => (
-        <GroupListItem group={group} chatId={chatId} key={group._id} />
+      myGroups.map((group, index) => (
+        <GroupListItem group={group} chatId={chatId} key={group._id} index={index}/>
       ))
     ) : (
       <p className="text-center p-2">No Groups</p>
@@ -346,7 +349,7 @@ const GroupList = ({ myGroups = [], chatId }) => (
   </Stack>
 );
 
-const GroupListItem = memo(({ group, chatId }) => {
+const GroupListItem = memo(({ group, chatId, index }) => {
   const { name, avatar, _id } = group;
   return (
     <Link
@@ -355,10 +358,15 @@ const GroupListItem = memo(({ group, chatId }) => {
         if (chatId === _id) e.preventDefault(); // this is ensuring that the chat that is already opened can't be reopened when user clicks on that chat again
       }}
     >
-      <div className="flex items-center p-4 gap-3 relative w-[300px]">
+      <motion.div
+        initial={{ opacity: 0, y: "-100%" }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        className="flex items-center p-4 gap-3 relative w-[300px]"
+      >
         <AvatarCard avatar={avatar} />
         <p>{name}</p>
-      </div>
+      </motion.div>
     </Link>
   );
 });

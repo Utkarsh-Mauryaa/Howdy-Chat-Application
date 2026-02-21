@@ -12,8 +12,13 @@ const Groups = lazy(() => import("./pages/Groups"));
 const Login = lazy(() => import("./pages/Login"));
 const Chat = lazy(() => import("./pages/Chat"));
 const NotFound = lazy(() => import('./pages/NotFound'));
+
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'))
+
 import {Toaster} from 'react-hot-toast'
 import { SocketProvider } from "./utils/socket";
+
 
 
 const App = () => {
@@ -42,6 +47,10 @@ const App = () => {
           <Route path="/login" element={<ProtectRoute user={!user} redirect="/" />}>
             <Route path="/login" element={<Login />} />
           </Route>
+
+          <Route path="/admin" element={<AdminLogin/>}/>
+          <Route path="/admin/dashboard" element={<Dashboard/>}/>
+
           <Route path="*" element={<NotFound />} />
 
         </Routes>

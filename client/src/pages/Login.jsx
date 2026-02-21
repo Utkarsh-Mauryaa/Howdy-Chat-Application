@@ -9,6 +9,9 @@ import { usernameValidator } from "../utils/validators";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const fileInputRef = useRef(null);
   const name = useInputValidation("");
   const bio = useInputValidation("");
@@ -18,6 +21,8 @@ const Login = () => {
   const dispatch = useDispatch();
   const handleSignIn = async (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Logging In...")
+    setIsLoading(true);
     const config = {
       withCredentials: true,
       headers: {
@@ -33,15 +38,23 @@ const Login = () => {
         },
         config,
       );
-      dispatch(userExists(true));
-      toast.success(response.data.message);
+      dispatch(userExists(response.data.user));
+      toast.success(response.data.message , {
+        id: toastId
+      });
     } catch (e) {
-      toast.error(e?.response?.data?.message || "Something went wrong!");
+      toast.error(e?.response?.data?.message || "Something went wrong!", {
+        id: toastId
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSignUp = async (e) => {
     e.preventDefault();
-    console.log("hey")
+    const toastId = toast.loading("Signing Up...")
+    setIsLoading(true);
+    console.log("hey");
     const formData = new FormData();
     formData.append("avatar", avatar.file);
     formData.append("name", name.value);
@@ -57,10 +70,16 @@ const Login = () => {
           "Content-Type": "multipart/form-data",
         },
       );
-      dispatch(userExists(true));
-      toast.success(response.data.message);
+      dispatch(userExists(response.data.user));
+      toast.success(response.data.message, {
+        id: toastId
+      });
     } catch (e) {
-      toast.error(e?.response?.data?.message || "Something went wrong!");
+      toast.error(e?.response?.data?.message || "Something went wrong!", {
+        id: toastId
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,6 +144,7 @@ const Login = () => {
                              transition-all duration-300
                              hover:bg-blue-700 hover:scale-[1.02]
                              active:scale-95"
+                    disabled={isLoading}
                   >
                     Sign In
                   </button>
@@ -134,6 +154,7 @@ const Login = () => {
               <p className="text-center text-sm text-gray-600 mt-4">
                 Don’t have an account?{" "}
                 <span
+                  disabled={isLoading}
                   onClick={() => setIsLogin(false)}
                   className="text-blue-600 cursor-pointer hover:underline"
                 >
@@ -296,6 +317,7 @@ const Login = () => {
                              transition-all duration-300
                              hover:bg-blue-700 hover:scale-[1.02]
                              active:scale-95"
+                    disabled={isLoading}
                   >
                     Sign Up
                   </button>
@@ -305,6 +327,7 @@ const Login = () => {
               <p className="text-center text-sm text-gray-600 mt-4">
                 Already have an account?{" "}
                 <span
+                  disabled={isLoading}
                   onClick={() => setIsLogin(true)}
                   className="text-blue-600 cursor-pointer hover:underline"
                 >

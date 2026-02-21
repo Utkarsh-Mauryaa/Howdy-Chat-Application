@@ -8,6 +8,7 @@ import {
   Stack,
 } from "@mui/material";
 import { memo } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useErrors } from "../../hooks/hook";
 import {
@@ -15,7 +16,6 @@ import {
   useGetNotificationsQuery,
 } from "../../redux/api/api";
 import { setIsNotification } from "../../redux/reducer/misc";
-import toast from "react-hot-toast";
 
 const Notifications = () => {
   

@@ -35,7 +35,7 @@ export const SignIn = tryCatch(async (req, res, next) => {
   const user = await User.findOne({ username }).select("+password");
   if (!user) return next(new ErrorHandler("Invalid Username!", 404));
   const isMatch = await compare(password, user.password);
-  if (!user) return next(new ErrorHandler("Invalid Password!"));
+  if (!isMatch) return next(new ErrorHandler("Invalid Password!"));
   sendToken(res, user, 200, `Welcome Back, ${user.name}`);
 });
 
