@@ -1,55 +1,73 @@
-export const sampleChats = [{
-  avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA","https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA","https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
-  name: "utk",
-  _id: "1",
-  groupChat:false,
-  members:["1", "2"],
-},
-{
-  avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
-  name: "deep",
-  _id: "2",
-  groupChat:false,
-  members:["1", "2"],
-},
-
-]
-
-export const sampleUsers = [{
-  avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA","https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA","https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
-  name: "utk",
-  _id: "1",
-},
-{
-  avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
-  name: "deep",
-  _id: "2",
-},
-]
-
-export const sampleNotifications = [{
-  sender:{
-    avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
+export const sampleChats = [
+  {
+    avatar: [
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+    ],
     name: "utk",
+    _id: "1",
+    groupChat: false,
+    members: ["1", "2"],
   },
-  _id: "1",
-},
-{
-   sender:{
-    avatar:["https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA"],
+  {
+    avatar: [
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+    ],
     name: "deep",
+    _id: "2",
+    groupChat: false,
+    members: ["1", "2"],
   },
-  _id: "2",
-}
-]
+];
+
+export const sampleUsers = [
+  {
+    avatar: [
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+    ],
+    name: "utk",
+    _id: "1",
+  },
+  {
+    avatar: [
+      "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+    ],
+    name: "deep",
+    _id: "2",
+  },
+];
+
+export const sampleNotifications = [
+  {
+    sender: {
+      avatar: [
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      ],
+      name: "utk",
+    },
+    _id: "1",
+  },
+  {
+    sender: {
+      avatar: [
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      ],
+      name: "deep",
+    },
+    _id: "2",
+  },
+];
 export const sampleMessage = [
   {
     attachments: [
-    {
-      public_id: "askjs",
-      url: "https://www.w3schools.com/css/paris.jpg",
-    },
-  ],
+      {
+        public_id: "askjs",
+        url: "https://www.w3schools.com/css/paris.jpg",
+      },
+    ],
     content: "Kisi ka message hai",
     _id: "kdsjfks",
     sender: {
@@ -57,15 +75,15 @@ export const sampleMessage = [
       name: "Chaman",
     },
     chat: "chatId",
-    createdAt:"2026-01-05T15:28:58.005Z",
+    createdAt: "2026-01-05T15:28:58.005Z",
   },
   {
     attachments: [
-    {
-      public_id: "askjs",
-      url: "https://p320.djpunjab.is/data/48/3602/23457/Mitran%20Da%20Naa%20Chalda%20-%20Harjit%20Harman.mp3",
-    },
-  ],
+      {
+        public_id: "askjs",
+        url: "https://p320.djpunjab.is/data/48/3602/23457/Mitran%20Da%20Naa%20Chalda%20-%20Harjit%20Harman.mp3",
+      },
+    ],
     content: "Kisi aur ka message hai",
     _id: "aihej",
     sender: {
@@ -73,6 +91,115 @@ export const sampleMessage = [
       name: "Chaman",
     },
     chat: "chatId",
-    createdAt:"2026-01-05T15:28:58.005Z",
+    createdAt: "2026-01-05T15:28:58.005Z",
   },
 ];
+
+export const dashboardData = {
+  users: [
+    {
+      name: "John",
+      avatar:
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      _id: "1",
+      username: "john_doe",
+      friends: 150,
+      groups: 5,
+    },
+    {
+      name: "Jane",
+      avatar:
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      _id: "2",
+      username: "jane_doe",
+      friends: 200,
+      groups: 8,
+    },
+  ],
+  chats: [
+    {
+      name: "General Chat",
+      avatar: [
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      ],
+      _id: "1",
+      groupChat: true,
+      members: [
+        {
+          _id: "1",
+          avatar:
+            "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+        },
+        {
+          _id: "2",
+          avatar:
+            "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+        },
+      ],
+      totalMembers: 2,
+      totalMessages: 100,
+      creator: {
+        name: "John",
+        avatar:
+          "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      },
+    },
+    {
+      name: "Project Team",
+      avatar: [
+        "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      ],
+      _id: "2",
+      groupChat: true,
+      members: [
+        {
+          _id: "1",
+          avatar:
+            "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+        },
+        {
+          _id: "2",
+          avatar:
+            "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+        },
+      ],
+      totalMembers: 2,
+      totalMessages: 50,
+      creator: {
+        name: "Jane",
+        avatar:
+          "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      },
+    },
+  ],
+  messages:[
+    {
+      attachments:[],
+      content: "Hello, how are you?",
+      _id: "1",
+      sender: {
+        name: "John",
+        avatar: "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",},
+      chat: "General Chat",
+      groupChat: true,
+      createdAt: "2026-01-05T15:28:58.005Z",
+    },
+    {
+      attachments:[
+        {
+          public_id: "askjs",
+          url: "https://www.w3schools.com/css/paris.jpg",
+        }
+      ],
+      content: "Check out this image!",
+      _id: "2",
+      sender: {
+        name: "Jane",
+        avatar: "https://imgs.search.brave.com/ti0cgZQ1YCgcKWAPBiZBaCBW5tETfhxoK2Cfm-DB5Qc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4t/ZnJvbnQuZnJlZXBp/ay5jb20vaG9tZS9h/bm9uLXJ2bXAvY3Jl/YXRpdmUtc3VpdGUv/YWR2ZXJ0aXNpbmcv/cGhvdG8tdmlkZW8u/d2VicA",
+      },
+      chat: "Project Team",
+      groupChat: false,
+      createdAt: "2026-01-05T15:30:00.005Z",
+    }
+  ]
+};

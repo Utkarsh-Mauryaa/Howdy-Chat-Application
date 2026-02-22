@@ -1,116 +1,157 @@
-import { Box, Drawer, IconButton, Stack, styled, Typography } from "@mui/material";
+import { Drawer, IconButton } from "@mui/material";
 import { useState } from "react";
-import { IoMenuOutline } from "react-icons/io5";
-import { IoClose } from "react-icons/io5";
-import { useLocation } from "react-router-dom";
-import {Link as LinkComponent} from 'react-router-dom'
+import { IoMenuOutline, IoClose } from "react-icons/io5";
+import { Navigate, useLocation, Link } from "react-router-dom";
 import { MdDashboardCustomize } from "react-icons/md";
 import { MdManageAccounts } from "react-icons/md";
 import { MdGroups } from "react-icons/md";
-import { BsChatSquareTextFill } from "react-icons/bs"
-import { color } from "framer-motion";
+import { BsChatSquareTextFill } from "react-icons/bs";
+import { MdOutlineExitToApp } from "react-icons/md";
 
-
-const Link = styled(LinkComponent)`
-text-decoration:none;
-border-radius: 2rem;
-color: black;
-padding:1rem 2rem;
-&:hover {
-    background-color: #f0577dff;
-}
-
-`
-
-const adminTabs = [{
+const adminTabs = [
+  {
     name: "Dashboard",
     path: "/admin/dashboard",
-    icon: <MdDashboardCustomize />
-
-},
-{
+    icon: <MdDashboardCustomize />,
+  },
+  {
     name: "Users",
-    path: "/admin/user-management",
-    icon: <MdManageAccounts />
-
-
-},
-{
+    path: "/admin/users",
+    icon: <MdManageAccounts />,
+  },
+  {
     name: "Chats",
-    path: "/admin/group-management",
-    icon: <MdGroups />
-
-},
-{
+    path: "/admin/chats",
+    icon: <MdGroups />,
+  },
+  {
     name: "Messages",
     path: "/admin/messages",
-    icon: <BsChatSquareTextFill />
+    icon: <BsChatSquareTextFill />,
+  },
+];
 
-},
-]
-
-const Sidebar = ({ w = "100%" }) => {
+const Sidebar = () => {
   const location = useLocation();
+  
+  const logoutHandler = () => {
+    console.log("Logging out...");
+  };
 
   return (
-    <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
-        <Typography variant="h5" textTransform={"uppercase"}>Howdy!</Typography>
-        <Stack spacing={"1rem"}>
-            {
-                adminTabs.map((tab) => 
-                    (<Link key={tab.path} to={tab.path}
-                    sx={
-                        location.pathname === tab.path && {
-                            backgroundColor: "#f0577dff",
-                            fontWeight: "bold",
-                            color: "white",
-                            ":hover": {
-                                color: "rgba(249, 198, 198, 0.17)",
-                            }
-                        }
-                    }
-                    >
-                        <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
-                            {tab.icon}
-                            <Typography sx={{
-                                padding: "10px"
-                            }}>{tab.name}</Typography>
-                        </Stack>
-                    </Link>)
-                )
-            }
-        </Stack>
+    <div className="h-full w-full flex flex-col px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12">
+      {/* Header */}
+      <h2 className="text-xl md:text-2xl font-semibold uppercase mb-8 md:mb-10 lg:mb-12">
+        Howdy!
+      </h2>
 
-    </Stack>
+      {/* Navigation Links */}
+      <div className="flex flex-col gap-3">
+        {adminTabs.map((tab) => {
+          const isActive = location.pathname === tab.path;
+          return (
+            <Link
+              key={tab.path}
+              to={tab.path}
+              className={`
+                flex items-center gap-4 px-6 py-3 rounded-full 
+                transition-all duration-200 no-underline
+                ${
+                  isActive
+                    ? "bg-[#f0577dff] text-white font-semibold"
+                    : "text-black hover:bg-[#f0577dff] hover:text-white"
+                }
+              `}
+            >
+              <span className="text-xl md:text-2xl flex-shrink-0">
+                {tab.icon}
+              </span>
+              <span className="text-sm md:text-base whitespace-nowrap">
+                {tab.name}
+              </span>
+            </Link>
+          );
+        })}
+
+        {/* Logout */}
+        <button
+          onClick={logoutHandler}
+          className="
+            flex items-center gap-4 px-6 py-3 rounded-full 
+            text-black hover:bg-[#f0577dff] hover:text-white 
+            transition-all duration-200 text-left w-full
+          "
+        >
+          <span className="text-xl md:text-2xl flex-shrink-0">
+            <MdOutlineExitToApp />
+          </span>
+          <span className="text-sm md:text-base whitespace-nowrap">
+            Logout
+          </span>
+        </button>
+      </div>
+    </div>
   );
 };
+
+const isAdmin = true;
 
 const AdminLayout = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
   const handleMobile = () => setIsMobile(!isMobile);
   const handleClose = () => setIsMobile(false);
 
+  if (!isAdmin) {
+    return <Navigate to="/admin" />;
+  }
+
   return (
-    <div className="flex-grow grid grid-cols-1 md:grid-cols-[1fr_3fr] overflow-hidden h-screen">
-      <Box
-        sx={{
-          display: { xs: "block", md: "none" },
-          position: "fixed",
-          right: "20px",
-          top: "20px",
-        }}
-      >
-        <IconButton onClick={handleMobile}>
-          {isMobile ? <IoClose /> : <IoMenuOutline />}
+    <div className="flex min-h-screen max-h-screen overflow-hidden">
+      {/* Mobile Menu Button */}
+      <div className="md:hidden fixed top-4 right-4 z-50">
+        <IconButton
+          onClick={handleMobile}
+          sx={{
+            backgroundColor: "white",
+            boxShadow: 2,
+            "&:hover": {
+              backgroundColor: "#f5f5f5",
+            },
+          }}
+        >
+          {isMobile ? (
+            <IoClose className="text-2xl" />
+          ) : (
+            <IoMenuOutline className="text-2xl" />
+          )}
         </IconButton>
-      </Box>
-      <div className="hidden md:block h-full overflow-y-auto">
-        <Sidebar />
       </div>
 
-      <div className="h-full overflow-y-auto bg-neutral-200">{children}</div>
-      <Drawer open={isMobile} onClose={handleClose}>
-        <Sidebar w="50vw" />
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block md:w-[280px] lg:w-[300px] xl:w-[320px] h-screen overflow-y-auto bg-white border-r border-gray-200 flex-shrink-0">
+        <Sidebar />
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 h-screen overflow-y-auto bg-neutral-200">
+        <div className="w-full h-full p-4 sm:p-6 md:p-8 lg:p-10">
+          {children}
+        </div>
+      </main>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        open={isMobile}
+        onClose={handleClose}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            width: "280px",
+            maxWidth: "85vw",
+          },
+        }}
+      >
+        <Sidebar />
       </Drawer>
     </div>
   );
