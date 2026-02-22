@@ -50,6 +50,11 @@ const lineChartOptions = {
       grid: {
         display: false,
       },
+      min:0,
+      max:35,
+      ticks:{
+        stepSize:5
+      }
     },
   },
 };
@@ -59,7 +64,7 @@ const LineChart = ({ value = [] }) => {
     labels: labels,
     datasets: [
       {
-        label: "Groups",
+        label: "Messages",
         data: value,
         fill: true,
         backgroundColor: "rgba(54, 162, 235, 0.3)",

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
-import { Avatar } from "@mui/material";
+import { Avatar, Skeleton } from "@mui/material";
 import { dashboardData } from "../../utils/sampleData";
 import { transformImage } from "../../lib/features";
 import AvatarCard from "../../components/shared/AvatarCard";
+import { useErrors } from "../../hooks/hook";
+import { useGetAdminChatsQuery } from "../../redux/api/api";
 
 const columns = [
   {
@@ -25,11 +27,18 @@ const columns = [
     ),
   },
   {
-    field: "name",
+    field: "name", // name should be same to the data that you send from the backend
     headerName: "Name",
     width: 300,
     headerClassName: "table-header",
   },
+  {
+    field: "groupChat",
+    headerName: "Group",
+    width: 100,
+    headerClassName: "table-header",
+  },
+
   {
     field: "totalMembers",
     headerName: "Total Members",
@@ -74,26 +83,41 @@ const columns = [
 ];
 
 const ChatManagement = () => {
+  const { isLoading, data, error, isError } = useGetAdminChatsQuery();
+
+  useErrors([
+    {
+      isError,
+      error,
+    },
+  ]);
+
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
+    if(data) {
     setRows(
-      dashboardData.chats.map((i) => ({
+      data.chats.map((i) => ({
         ...i,
         id: i._id,
         avatar: i.avatar.map((i) => transformImage(i, 50)),
         members: i.members.map((i) => transformImage(i.avatar, 50)),
-        creator:{
-            name: i.creator.name,
-            avatar: transformImage(i.creator.avatar, 50)
-        }
+        creator: {
+          name: i.creator.name,
+          avatar: transformImage(i.creator.avatar, 50),
+        },
       })),
     );
-  }, []);
+  }
+  }, [data]);
 
   return (
     <AdminLayout>
-      <Table heading={"All Chats"} columns={columns} rows={rows} />
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <Table heading={"All Chats"} columns={columns} rows={rows} />
+      )}
     </AdminLayout>
   );
 };

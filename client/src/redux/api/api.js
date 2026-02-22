@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { server } from "../../utils/config";
 
-
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1` }),
-  tagTypes: ["Chat", "User", "Message"],
+  tagTypes: ["Chat", "User", "Message", "Dashboard-Users", "Dashboard-Stats","Dashboard-Chats","Dashboard-Messages"],
   endpoints: (builder) => ({
     getMyChats: builder.query({
       query: () => ({
@@ -48,7 +47,6 @@ const api = createApi({
     }),
     chatDetails: builder.query({
       query: ({ chatId, populate = false }) => {
-
         let url = `/chat/${chatId}`;
         if (populate) url += `?populate=true`;
 
@@ -59,12 +57,13 @@ const api = createApi({
       },
       providesTags: ["Chat"],
     }),
-    getMessages: builder.query({ // for paging
+    getMessages: builder.query({
+      // for paging
       query: ({ chatId, page }) => ({
-          url: `/chat/message/${chatId}?page=${page}`,
-          credentials: "include",
-        }),
-      keepUnusedDataFor:0,
+        url: `/chat/message/${chatId}?page=${page}`,
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0,
     }),
     sendAttachments: builder.mutation({
       query: (data) => ({
@@ -73,6 +72,7 @@ const api = createApi({
         credentials: "include",
         body: data,
       }),
+      invalidatesTags:["Dashboard-Stats"]
     }),
     myGroups: builder.query({
       query: () => ({
@@ -83,7 +83,6 @@ const api = createApi({
     }),
     availableFriends: builder.query({
       query: (chatId) => {
-
         let url = `/user/friends`;
         if (chatId) url += `?chatId=${chatId}`;
 
@@ -95,38 +94,38 @@ const api = createApi({
       providesTags: ["Chat"],
     }),
     newGroup: builder.mutation({
-      query: ({name, members}) => ({
+      query: ({ name, members }) => ({
         url: "/chat/new",
         method: "POST",
         credentials: "include",
-        body: {name, members},
+        body: { name, members },
       }),
       invalidatesTags: ["Chat"],
     }),
     renameGroup: builder.mutation({
-      query: ({chatId, name}) => ({
+      query: ({ chatId, name }) => ({
         url: `/chat/${chatId}`,
         method: "PUT",
         credentials: "include",
-        body: {name},
+        body: { name },
       }),
       invalidatesTags: ["Chat"],
     }),
     removeGroupMember: builder.mutation({
-      query: ({chatId, userId}) => ({
+      query: ({ chatId, userId }) => ({
         url: `/chat/removeMember`,
         method: "DELETE",
         credentials: "include",
-        body: {chatId, userId},
+        body: { chatId, userId },
       }),
       invalidatesTags: ["Chat", "User"],
     }),
     addGroupMembers: builder.mutation({
-      query: ({members, chatId}) => ({
+      query: ({ members, chatId }) => ({
         url: `/chat/addMembers`,
         method: "PUT",
         credentials: "include",
-        body: {members, chatId},
+        body: { members, chatId },
       }),
       invalidatesTags: ["Chat"],
     }),
@@ -145,6 +144,50 @@ const api = createApi({
         credentials: "include",
       }),
       invalidatesTags: ["Chat"],
+    }),
+    adminLogin: builder.mutation({
+      query: (secretKey) => ({
+        url: `/admin/login`,
+        method: "POST",
+        credentials: "include",
+        body: { secretKey },
+      }),
+    }),
+    adminLogout: builder.query({
+      query: () => ({
+        url: `/admin/logout`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    adminStats: builder.query({
+      query: () => ({
+        url: `/admin/stats`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Dashboard-Stats"]
+    }),
+    getAdminUsers: builder.query({
+      query: () => ({
+        url: `/admin/users`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    getAdminChats: builder.query({
+      query: () => ({
+        url: `/admin/chats`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    getAdminMessages: builder.query({
+      query: () => ({
+        url: `/admin/messages`,
+        method: "GET",
+        credentials: "include",
+      }),
     }),
   }),
 });
@@ -166,5 +209,10 @@ export const {
   useRemoveGroupMemberMutation,
   useAddGroupMembersMutation,
   useDeleteChatMutation,
-  useLeaveGroupMutation
+  useLeaveGroupMutation,
+  useAdminLoginMutation,
+  useLazyAdminLogoutQuery,
+  useAdminStatsQuery,
+  useGetAdminUsersQuery,
+  useGetAdminChatsQuery
 } = api;

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
-import { Avatar } from "@mui/material";
+import { Avatar, Skeleton } from "@mui/material";
 import { dashboardData } from "../../utils/sampleData";
 import { transformImage } from "../../lib/features";
+import { useErrors } from "../../hooks/hook";
+import { useGetAdminUsersQuery } from "../../redux/api/api";
 
 const columns = [
   {
@@ -18,9 +20,13 @@ const columns = [
     width: 150,
     headerClassName: "table-header",
     renderCell: (params) => (
-      <Avatar alt={params.row.name} src={params.row.avatar} sx={{
-        marginTop: "0.3rem",
-      }}/>
+      <Avatar
+        alt={params.row.name}
+        src={params.row.avatar}
+        sx={{
+          marginTop: "0.3rem",
+        }}
+      />
     ),
   },
   {
@@ -49,19 +55,37 @@ const columns = [
   },
 ];
 const UserManagement = () => {
+  const { isLoading, data, error, isError } = useGetAdminUsersQuery();
+
+  useErrors([
+    {
+      isError,
+      error,
+    },
+  ]);
+
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(
-      dashboardData.users.map((user) => ({
-        ...user, id: user._id, avatar: transformImage(user.avatar, 50),
-      })),
-    );
-  }, []);
+    if(data) {
+      setRows(
+        data.users.map((user) => ({
+          ...user,
+          id: user._id,
+          avatar: transformImage(user.avatar, 50),
+        })),
+      );
+
+    }
+  }, [data]);
 
   return (
     <AdminLayout>
-      <Table heading={"All Users"} columns={columns} rows={rows} />
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <Table heading={"All Users"} columns={columns} rows={rows} />
+      )}
     </AdminLayout>
   );
 };

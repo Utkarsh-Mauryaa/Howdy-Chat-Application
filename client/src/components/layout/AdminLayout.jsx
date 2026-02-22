@@ -7,6 +7,10 @@ import { MdManageAccounts } from "react-icons/md";
 import { MdGroups } from "react-icons/md";
 import { BsChatSquareTextFill } from "react-icons/bs";
 import { MdOutlineExitToApp } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { useLazyAdminLogoutQuery } from "../../redux/api/api";
+import { adminNotExists } from "../../redux/reducer/auth";
+import toast from "react-hot-toast";
 
 const adminTabs = [
   {
@@ -33,9 +37,24 @@ const adminTabs = [
 
 const Sidebar = () => {
   const location = useLocation();
-  
-  const logoutHandler = () => {
-    console.log("Logging out...");
+  const dispatch = useDispatch();
+  const [adminLogout, _] = useLazyAdminLogoutQuery();
+
+  const logoutHandler = async () => {
+    const toastId = toast.loading("Logging out...");
+
+    try {
+      const res = await adminLogout().unwrap();
+      toast.success(res.message || "Logout successful!", {
+        id: toastId,
+      });
+      dispatch(adminNotExists());
+    } catch (error) {
+      toast.error(error?.data?.message || "Logout failed", {
+        id: toastId,
+      });
+      dispatch(adminNotExists());
+    }
   };
 
   return (
@@ -85,18 +104,15 @@ const Sidebar = () => {
           <span className="text-xl md:text-2xl flex-shrink-0">
             <MdOutlineExitToApp />
           </span>
-          <span className="text-sm md:text-base whitespace-nowrap">
-            Logout
-          </span>
+          <span className="text-sm md:text-base whitespace-nowrap">Logout</span>
         </button>
       </div>
     </div>
   );
 };
 
-const isAdmin = true;
-
 const AdminLayout = ({ children }) => {
+  const { isAdmin } = useSelector((state) => state.auth);
   const [isMobile, setIsMobile] = useState(false);
   const handleMobile = () => setIsMobile(!isMobile);
   const handleClose = () => setIsMobile(false);

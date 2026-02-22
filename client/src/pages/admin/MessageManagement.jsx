@@ -35,7 +35,7 @@ const columns = [
                     color: "black",
                   }}
                 >
-                    {RenderAttachment(file, url)}
+                  {RenderAttachment(file, url)}
                 </a>
               </Box>
             );
@@ -60,7 +60,7 @@ const columns = [
           alt={params.row.sender.name}
           src={params.row.sender.avatar}
           sx={{
-            marginTop:"3.4rem"
+            marginTop: "3.4rem",
           }}
         />
         <span>{params.row.sender.name}</span>
@@ -88,6 +88,15 @@ const columns = [
 ];
 
 const MessageManagement = () => {
+  const { isLoading, data, error, isError } = useGetAdminChatsQuery();
+
+  useErrors([
+    {
+      isError,
+      error,
+    },
+  ]);
+
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -106,7 +115,12 @@ const MessageManagement = () => {
 
   return (
     <AdminLayout>
-      <Table heading={"All Messages"} columns={columns} rows={rows} rowHeight={150}/>
+      <Table
+        heading={"All Messages"}
+        columns={columns}
+        rows={rows}
+        rowHeight={150}
+      />
     </AdminLayout>
   );
 };

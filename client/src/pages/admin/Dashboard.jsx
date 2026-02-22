@@ -10,8 +10,24 @@ import {
   CurveButton,
   SearchField,
 } from "../../components/styles/StyledComponents";
+import { useAdminStatsQuery } from "../../redux/api/api";
+import { LayoutLoader } from "../../components/layout/Loaders";
+import { useErrors } from "../../hooks/hook";
 
 const Dashboard = () => {
+  const { isLoading, data, error, isError } = useAdminStatsQuery("",{
+    pollingInterval:2000
+  });
+
+  const { stats } = data || {};
+
+  useErrors([
+    {
+      isError,
+      error,
+    },
+  ]);
+
   const Appbar = (
     <Paper
       elevation={3}
@@ -35,18 +51,21 @@ const Dashboard = () => {
       </div>
     </Paper>
   );
+
   const Widgets = (
     <div className="flex flex-col gap-4 sm:flex-row justify-between flex-wrap items-stretch items-center mt-4 mb-4">
-      <Widget title={"Users"} value={1200} icon={<FaUser />} />
-      <Widget title={"Chats"} value={1200} icon={<MdGroups />} />
+      <Widget title={"Users"} value={stats?.usersCount} icon={<FaUser />} />
+      <Widget title={"Chats"} value={stats?.totalChatsCount} icon={<MdGroups />} />
       <Widget
         title={"Messages"}
-        value={1200}
+        value={stats?.messagesCount}
         icon={<BiSolidMessageSquareDetail />}
       />
     </div>
   );
-  return (
+  return isLoading ? (
+    <LayoutLoader />
+  ) : (
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
@@ -62,7 +81,7 @@ const Dashboard = () => {
             }}
           >
             <p className="p-4 margin-2 text-3xl">Last 7 Days Messages</p>
-            <LineChart value={[23, 43, 56, 78]}/>
+            <LineChart value={stats?.messagesChart || []} />
           </Paper>
           <Paper
             elevation={3}
@@ -80,7 +99,10 @@ const Dashboard = () => {
               borderRadius: "12px",
             }}
           >
-            <DoughnutChart labels={["Single Chats", "Group Chats"]} value={[23, 66]}/>
+            <DoughnutChart
+              labels={["Single Chats", "Group Chats"]}
+              value={[stats?.totalChatsCount - stats?.groupsCount || 0, stats?.groupsCount || 0]}
+            />
             <div className="absolute flex justify-center items-center w-full h-full">
               <MdGroups className="text-3xl" />
               <p>Vs</p>
