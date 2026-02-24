@@ -7,7 +7,6 @@ import {motion} from "framer-motion"
 const Message = ({ message, user }) => {
   const { sender, content, attachments = [], createdAt } = message
   const timeAgo = moment(createdAt).fromNow();
-  console.log(attachments)
   return (
     <motion.div 
     initial={{opacity:0, x:"-100%"}}

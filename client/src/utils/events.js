@@ -11,3 +11,9 @@ export const START_TYPING = "START_TYPING";
 export const STOP_TYPING = "STOP_TYPING";
 
 export const MEMBER_REMOVED = "MEMBER_REMOVED";
+
+
+export const CHAT_OPENED = "CHAT_OPENED";
+export const CHAT_LEAVED = "CHAT_LEAVED";
+
+export const ONLINE_USERS = "ONLINE_USERS"

@@ -122,7 +122,7 @@ const AdminLayout = ({ children }) => {
   }
 
   return (
-    <div className="flex min-h-screen max-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-y-hidden">
       {/* Mobile Menu Button */}
       <div className="md:hidden fixed top-4 right-4 z-50">
         <IconButton
@@ -138,7 +138,7 @@ const AdminLayout = ({ children }) => {
           {isMobile ? (
             <IoClose className="text-2xl" />
           ) : (
-            <IoMenuOutline className="text-2xl" />
+            <IoMenuOutline className="md:text-2xl text-sm" />
           )}
         </IconButton>
       </div>
@@ -150,7 +150,7 @@ const AdminLayout = ({ children }) => {
 
       {/* Main Content */}
       <main className="flex-1 h-screen overflow-y-auto bg-neutral-200">
-        <div className="w-full h-full p-4 sm:p-6 md:p-8 lg:p-10">
+        <div className="w-full h-full p-3 sm:p-4 md:p-6 lg:p-8">
           {children}
         </div>
       </main>

@@ -30,6 +30,7 @@ ChartJS.register(
 const labels = getLast7Days();
 
 const lineChartOptions = {
+  maintainAspectRatio: false,
   responsive: true,
   plugins: {
     legend: {
@@ -73,7 +74,11 @@ const LineChart = ({ value = [] }) => {
       },
     ],
   };
-  return <Line data={data} options={lineChartOptions} />;
+  return <div className="h-[275px]">
+    <Line data={data} options={lineChartOptions} />
+
+  </div>
+  
 };
 
 const doughnutChartOptions = {
@@ -100,7 +105,12 @@ const DoughnutChart = ({ value = [], labels = [] }) => {
       },
     ],
   };
-  return <Doughnut className="z-10" data={data} options={doughnutChartOptions} />;
+  return <div>
+    <Doughnut className="z-10" data={data} options={doughnutChartOptions} />;
+
+  </div> 
+  
+  
 };
 
 export { LineChart, DoughnutChart };

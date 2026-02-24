@@ -11,6 +11,8 @@ import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { setIsFileMenu } from "../redux/reducer/misc";
 import {
   ALERT,
+  CHAT_LEAVED,
+  CHAT_OPENED,
   MEMBER_REMOVED,
   NEW_MESSAGE,
   START_TYPING,
@@ -92,12 +94,15 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
+    socket.emit(CHAT_OPENED, {userId: user._id, members})
     dispatch(removeMessagesAlert(chatId));
+
     return () => {
       setMessages([]);
       setMessage([]);
       setOldMessages([]);
       setPage(1);
+      socket.emit(CHAT_LEAVED, {userId: user._id, members})
     };
   }, [chatId]);
 

@@ -10,8 +10,11 @@ import { createUser } from "./seeders/user.seed.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import {
+  CHAT_LEAVED,
+  CHAT_OPENED,
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
+  ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
 } from "./constants/events.js";
@@ -35,6 +38,7 @@ dotenv.config();
 const port = 3000 || process.env.PORT;
 export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "skdjfksjfne";
 export const userSocketIds = new Map();
+export const onlineUsers = new Set();
 
 connectDB();
 cloudinary.config({
@@ -78,8 +82,6 @@ io.on("connection", (socket) => {
       chat: chatId,
     };
 
-    console.log(`Emitting: ${messageForRealTime}`);
-
     const memberSocketIDs = getSockets(members); // here we have written this so that we can send messages to different users that are connected to socket with the help of their socketIDs
     io.to(memberSocketIDs).emit(NEW_MESSAGE, {
       chatId,
@@ -91,26 +93,38 @@ io.on("connection", (socket) => {
     } catch (e) {
       console.log(e);
     }
-    console.log("New Message", messageForRealTime);
   });
 
   socket.on(START_TYPING, ({ members, chatId }) => {
-    console.log("start-typing", chatId);
     const membersSocketIds = getSockets(members);
     socket.to(membersSocketIds).emit(START_TYPING, { chatId });
   });
 
   socket.on(STOP_TYPING, ({ members, chatId }) => {
-    console.log('stop-typing', chatId)
     const membersSocketIds = getSockets(members);
     socket.to(membersSocketIds).emit(STOP_TYPING, { chatId });
+  });
+
+  socket.on(CHAT_OPENED, ({ userId, members }) => {
+    onlineUsers.add(userId.toString());
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers)); // we are sending array because we can't send set directly
+  });
+
+  socket.on(CHAT_LEAVED, ({ userId, members }) => {
+    onlineUsers.delete(userId.toString());
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 
   socket.on("disconnect", () => {
     console.log("User disconnected");
     userSocketIds.delete(user._id.toString());
+    onlineUsers.delete(user._id.toString());
+    socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers))
   });
 });
+
 app.use(errorMiddleware);
 
 server.listen(3000, () => {

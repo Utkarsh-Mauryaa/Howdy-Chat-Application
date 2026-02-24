@@ -1,6 +1,6 @@
 import { useSocketEvents } from "6pp";
 import { Drawer, Skeleton } from "@mui/material";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useErrors } from "../../hooks/hook";
@@ -14,6 +14,7 @@ import { setIsDeleteMenu, setIsMobile, setSelectedDeleteChat } from "../../redux
 import {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
+  ONLINE_USERS,
   REFETCH_CHATS,
 } from "../../utils/events";
 import { getSocket } from "../../utils/socket";
@@ -31,6 +32,9 @@ function AppLayout() {
       const dispatch = useDispatch();
       const chatId = params.chatId;
       const deleteMenuAnchor = useRef(null);
+
+      const [onlineUsers, setOnlineUsers] = useState([]);
+
       const socket = getSocket();
       const { isMobile } = useSelector((state) => state.misc);
       const { user } = useSelector((state) => state.auth);
@@ -68,6 +72,10 @@ function AppLayout() {
         dispatch(incrementNotification());
       }, []);
 
+      const onlineUsersListener = useCallback((data) => {
+        setOnlineUsers(data)
+      }, []);
+
       const refetchListener = useCallback(() => {
         refetch();
         navigate("/");
@@ -77,6 +85,7 @@ function AppLayout() {
         [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
         [NEW_REQUEST]: newRequestListener,
         [REFETCH_CHATS]: refetchListener,
+        [ONLINE_USERS]: onlineUsersListener
       };
 
       useSocketEvents(socket, eventHandler);
@@ -98,9 +107,9 @@ function AppLayout() {
                   w="70vw"
                   chats={data?.chats}
                   chatId={chatId}
-                  onlineUsers={["1", "2"]}
                   handleDeleteChat={handleDeleteChat}
                   newMessagesAlert={newMessagesAlert}
+                  onlineUsers={onlineUsers}
                 />
               </Drawer>
             )}
@@ -113,9 +122,9 @@ function AppLayout() {
                   <ChatList
                     chats={data?.chats}
                     chatId={chatId}
-                    onlineUsers={["1", "2"]}
                     handleDeleteChat={handleDeleteChat}
                     newMessagesAlert={newMessagesAlert}
+                    onlineUsers={onlineUsers}
                   />
                 )}
               </div>

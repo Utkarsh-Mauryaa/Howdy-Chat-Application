@@ -4,7 +4,7 @@ import { server } from "../../utils/config";
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1` }),
-  tagTypes: ["Chat", "User", "Message", "Dashboard-Users", "Dashboard-Stats","Dashboard-Chats","Dashboard-Messages"],
+  tagTypes: ["Chat", "User", "Message", "Admin-Users", "Dashboard-Stats","Admin-Chats","Admin-Messages"],
   endpoints: (builder) => ({
     getMyChats: builder.query({
       query: () => ({
@@ -174,6 +174,7 @@ const api = createApi({
         method: "GET",
         credentials: "include",
       }),
+      providesTags:["Admin-Users"]
     }),
     getAdminChats: builder.query({
       query: () => ({
@@ -181,6 +182,7 @@ const api = createApi({
         method: "GET",
         credentials: "include",
       }),
+      providesTags:["Admin-Chats"]
     }),
     getAdminMessages: builder.query({
       query: () => ({
@@ -188,6 +190,7 @@ const api = createApi({
         method: "GET",
         credentials: "include",
       }),
+      providesTags:["Admin-Messages"]
     }),
   }),
 });
@@ -214,5 +217,6 @@ export const {
   useLazyAdminLogoutQuery,
   useAdminStatsQuery,
   useGetAdminUsersQuery,
-  useGetAdminChatsQuery
+  useGetAdminChatsQuery,
+  useGetAdminMessagesQuery
 } = api;

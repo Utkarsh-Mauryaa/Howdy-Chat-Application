@@ -181,7 +181,6 @@ export const leaveGroup = tryCatch(async (req, res, next) => {
   if (chat.creator.toString() === req.userId.toString()) {
     const randomElement = Math.floor(Math.random() * remainingMembers.length);
     const newCreator = remainingMembers[randomElement];
-    console.log("new creator", newCreator);
     chat.creator = newCreator;
     const newCreatorName = await User.findById(newCreator, "name");
     emitEvent(req, ALERT, chat.members, `User ${newCreatorName.name} is the new group admin now.`);
@@ -218,7 +217,6 @@ export const sendAttachments = tryCatch(async (req, res, next) => {
     return next(new ErrorHandler("Please provide attachments", 400));
 
   const attachments = await uploadFilesToCloudinary(files);
-  console.log("attach", attachments);
   const messageForDB = {
     content: "",
     attachments,
@@ -258,7 +256,7 @@ export const getChatDetails = tryCatch(async (req, res, next) => {
       name,
       avatar: avatar.url, // here we are turning an object into a string, Mongoose looks at the schema and says: wait the avatar field for a member is supposed to be an object with 2 properties but you are assigning a string to it.This is invalid so i'm ignore this change or cast it incorrectly.
     }));
-    console.log(chat.members);
+
     return res.status(200).json({
       success: true,
       chat,
@@ -275,8 +273,6 @@ export const getChatDetails = tryCatch(async (req, res, next) => {
 
 export const renameGroup = tryCatch(async (req, res, next) => {
   const chatId = req.params.id;
-
-  console.log(chatId);
 
   const { name } = req.body;
 
@@ -327,7 +323,6 @@ export const deleteChat = tryCatch(async (req, res, next) => {
     });
   });
   await Promise.all([
-    // delete files from cloudinary
     deleteFilesFromCloudinary(publicIds),
     chat.deleteOne(),
     Message.deleteMany({ chat: chatId }),

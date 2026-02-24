@@ -1,11 +1,17 @@
+import { Avatar, Box } from "@mui/material";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import Table from "../../components/shared/Table";
-import { fileFormat, transformImage } from "../../lib/features";
-import { dashboardData } from "../../utils/sampleData";
-import moment from "moment";
-import { Avatar, Box } from "@mui/material";
+import {
+  LayoutLoaderAdmin
+} from "../../components/layout/Loaders";
 import RenderAttachment from "../../components/shared/RenderAttachment";
+import Table from "../../components/shared/Table";
+import { useErrors } from "../../hooks/hook";
+import { fileFormat, transformImage } from "../../lib/features";
+import {
+  useGetAdminMessagesQuery
+} from "../../redux/api/api";
 
 const columns = [
   {
@@ -88,7 +94,11 @@ const columns = [
 ];
 
 const MessageManagement = () => {
-  const { isLoading, data, error, isError } = useGetAdminChatsQuery();
+  const { isLoading, data, error, isError } = useGetAdminMessagesQuery("", {
+    pollingInterval: 5000,
+  });
+
+  console.log(isError, error);
 
   useErrors([
     {
@@ -98,29 +108,35 @@ const MessageManagement = () => {
   ]);
 
   const [rows, setRows] = useState([]);
-
+  console.log(data);
   useEffect(() => {
-    setRows(
-      dashboardData.messages.map((i) => ({
-        ...i,
-        id: i._id,
-        sender: {
-          name: i.sender.name,
-          avatar: transformImage(i.sender.avatar, 50),
-        },
-        createdAt: moment(i.createdAt).format("MMMM Do YYYY, h:mm:ss a"),
-      })),
-    );
-  }, []);
+    if (data) {
+      setRows(
+        data.messages.map((i) => ({
+          ...i,
+          id: i._id,
+          sender: {
+            name: i.sender.name,
+            avatar: transformImage(i.sender.avatar, 50),
+          },
+          createdAt: moment(i.createdAt).format("MMMM Do YYYY, h:mm:ss a"),
+        })),
+      );
+    }
+  }, [data]);
 
   return (
     <AdminLayout>
-      <Table
-        heading={"All Messages"}
-        columns={columns}
-        rows={rows}
-        rowHeight={150}
-      />
+      {isLoading ? (
+        <LayoutLoaderAdmin />
+      ) : (
+        <Table
+          heading={"All Messages"}
+          columns={columns}
+          rows={rows}
+          rowHeight={150}
+        />
+      )}
     </AdminLayout>
   );
 };

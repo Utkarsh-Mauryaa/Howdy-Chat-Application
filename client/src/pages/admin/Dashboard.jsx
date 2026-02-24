@@ -5,18 +5,18 @@ import { FaUser } from "react-icons/fa";
 import { IoMdNotifications } from "react-icons/io";
 import { MdAdminPanelSettings, MdGroups } from "react-icons/md";
 import AdminLayout from "../../components/layout/AdminLayout";
+import { LayoutLoaderDashboard } from "../../components/layout/Loaders";
 import { DoughnutChart, LineChart } from "../../components/specific/Charts";
 import {
   CurveButton,
   SearchField,
 } from "../../components/styles/StyledComponents";
-import { useAdminStatsQuery } from "../../redux/api/api";
-import { LayoutLoader } from "../../components/layout/Loaders";
 import { useErrors } from "../../hooks/hook";
+import { useAdminStatsQuery } from "../../redux/api/api";
 
 const Dashboard = () => {
   const { isLoading, data, error, isError } = useAdminStatsQuery("",{
-    pollingInterval:2000
+    pollingInterval: 5000
   });
 
   const { stats } = data || {};
@@ -53,7 +53,7 @@ const Dashboard = () => {
   );
 
   const Widgets = (
-    <div className="flex flex-col gap-4 sm:flex-row justify-between flex-wrap items-stretch items-center mt-4 mb-4">
+    <div className="flex flex-row gap-4 justify-between flex-wrap mt-4 mb-4">
       <Widget title={"Users"} value={stats?.usersCount} icon={<FaUser />} />
       <Widget title={"Chats"} value={stats?.totalChatsCount} icon={<MdGroups />} />
       <Widget
@@ -64,23 +64,24 @@ const Dashboard = () => {
     </div>
   );
   return isLoading ? (
-    <LayoutLoader />
+    <LayoutLoaderDashboard />
   ) : (
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
-        <div className="flex flex-col gap-4 flex-wrap lg:flex-row">
+        <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap">
           <Paper
             elevation={3}
             sx={{
               padding: "16px",
               marginBottom: "24px",
               color: "#333",
-              flex: "1 1 300px",
-              width: "100%",
+              flex: "1 1 400px",
+              minWidth: 0,
+              height: "350px",
             }}
           >
-            <p className="p-4 margin-2 text-3xl">Last 7 Days Messages</p>
+            <p className="p-2 text-2xl relative top-[-8px]">Last 7 Days Messages</p>
             <LineChart value={stats?.messagesChart || []} />
           </Paper>
           <Paper
@@ -93,8 +94,9 @@ const Dashboard = () => {
               justifyContent: "center",
               color: "#333",
               flex: "1 1 300px",
-              maxWidth: "400px",
+              maxWidth: { xs: "100%", lg: "400px" },
               width: "100%",
+              height: "350px",
               position: "relative",
               borderRadius: "12px",
             }}
@@ -110,7 +112,9 @@ const Dashboard = () => {
             </div>
           </Paper>
         </div>
+        <div>
         {Widgets}
+        </div>
       </Container>
     </AdminLayout>
   );
@@ -127,24 +131,27 @@ const Widget = ({ title, value, icon }) => {
         alignItems: "center",
         justifyContent: "center",
         color: "#333",
-        flex: "1 1 300px",
+        flex: "1 1 200px",
+        minWidth: "180px",
         maxWidth: "400px",
         width: "100%",
         borderRadius: "12px",
         gap: "16px",
+        height: "183px"
       }}
     >
-      <div className="flex items-center gap-4 flex-col">
+      <div className="flex items-center gap-2 flex-col">
         <Typography
           sx={{
             borderRadius: "50%",
-            width: "6rem",
-            height: "6rem",
+            width: "5rem",
+            height: "5rem",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             color: "rgba(0,0,0,0.7)",
             border: "5px solid rgba(0,0,0,0.9)",
+            margin:"4px"
           }}
         >
           {value}

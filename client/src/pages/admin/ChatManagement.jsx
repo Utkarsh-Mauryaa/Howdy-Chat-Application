@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { Avatar } from "@mui/material";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import Table from "../../components/shared/Table";
-import { Avatar, Skeleton } from "@mui/material";
-import { dashboardData } from "../../utils/sampleData";
-import { transformImage } from "../../lib/features";
+import { LayoutLoaderAdmin } from "../../components/layout/Loaders";
 import AvatarCard from "../../components/shared/AvatarCard";
+import Table from "../../components/shared/Table";
 import { useErrors } from "../../hooks/hook";
+import { transformImage } from "../../lib/features";
 import { useGetAdminChatsQuery } from "../../redux/api/api";
 
 const columns = [
@@ -83,7 +83,9 @@ const columns = [
 ];
 
 const ChatManagement = () => {
-  const { isLoading, data, error, isError } = useGetAdminChatsQuery();
+  const { isLoading, data, error, isError } = useGetAdminChatsQuery("",{
+    pollingInterval: 5000
+  });
 
   useErrors([
     {
@@ -95,26 +97,26 @@ const ChatManagement = () => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    if(data) {
-    setRows(
-      data.chats.map((i) => ({
-        ...i,
-        id: i._id,
-        avatar: i.avatar.map((i) => transformImage(i, 50)),
-        members: i.members.map((i) => transformImage(i.avatar, 50)),
-        creator: {
-          name: i.creator.name,
-          avatar: transformImage(i.creator.avatar, 50),
-        },
-      })),
-    );
-  }
+    if (data) {
+      setRows(
+        data.chats.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: i.avatar.map((i) => transformImage(i, 50)),
+          members: i.members.map((i) => transformImage(i.avatar, 50)),
+          creator: {
+            name: i.creator.name,
+            avatar: transformImage(i.creator.avatar, 50),
+          },
+        })),
+      );
+    }
   }, [data]);
 
   return (
     <AdminLayout>
       {isLoading ? (
-        <Skeleton />
+        <LayoutLoaderAdmin />
       ) : (
         <Table heading={"All Chats"} columns={columns} rows={rows} />
       )}

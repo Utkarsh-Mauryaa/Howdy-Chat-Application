@@ -18,7 +18,7 @@ export const adminLogin = tryCatch(async (req, res, next) => {
     .status(200)
     .cookie("howdy-admin-token", token, {
       ...cookieOptions,
-      maxAge: 1000 * 60 * 15,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
     })
     .json({
       success: true,
@@ -102,9 +102,11 @@ export const getAllChats = tryCatch(async (req, res, next) => {
 });
 
 export const getAllMessages = tryCatch(async (req, res, next) => {
+  
   const messages = await Message.find({})
-    .populate("sender", "name avatar")
+    .populate("sender", "name avatar _id")
     .populate("chat", "groupChat");
+
   const transformedMessages = messages.map(
     ({ content, attachments, sender, _id, createdAt, chat }) => ({
       _id,
@@ -120,6 +122,7 @@ export const getAllMessages = tryCatch(async (req, res, next) => {
       },
     }),
   );
+
   return res.status(200).json({
     success: true,
     messages: transformedMessages,

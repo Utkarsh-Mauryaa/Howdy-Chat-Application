@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { Avatar } from "@mui/material";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import { LayoutLoader, LayoutLoaderAdmin } from "../../components/layout/Loaders";
 import Table from "../../components/shared/Table";
-import { Avatar, Skeleton } from "@mui/material";
-import { dashboardData } from "../../utils/sampleData";
-import { transformImage } from "../../lib/features";
 import { useErrors } from "../../hooks/hook";
+import { transformImage } from "../../lib/features";
 import { useGetAdminUsersQuery } from "../../redux/api/api";
 
 const columns = [
@@ -55,7 +55,9 @@ const columns = [
   },
 ];
 const UserManagement = () => {
-  const { isLoading, data, error, isError } = useGetAdminUsersQuery();
+  const { isLoading, data, error, isError } = useGetAdminUsersQuery("",{
+    pollingInterval: 5000
+  });
 
   useErrors([
     {
@@ -67,7 +69,7 @@ const UserManagement = () => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    if(data) {
+    if (data) {
       setRows(
         data.users.map((user) => ({
           ...user,
@@ -75,14 +77,13 @@ const UserManagement = () => {
           avatar: transformImage(user.avatar, 50),
         })),
       );
-
     }
   }, [data]);
 
   return (
     <AdminLayout>
       {isLoading ? (
-        <Skeleton />
+        <LayoutLoaderAdmin />
       ) : (
         <Table heading={"All Users"} columns={columns} rows={rows} />
       )}

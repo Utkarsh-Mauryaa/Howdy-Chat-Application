@@ -9,7 +9,7 @@ const Table = ({ rows, columns, heading, rowHeight = 52 }) => {
         sx={{
           padding: "1rem 2rem",
           borderRadius: "12px",
-          height: "400px",
+          height: "550px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
