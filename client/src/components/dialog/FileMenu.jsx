@@ -56,7 +56,7 @@ const FileMenu = ({ anchorE1, chatId }) => {
 
       const res = await sendAttachments(myForm).unwrap();
 
-      if (res.data) toast.success(`${key} sent successfully!`, { id: toastId });
+      if (res.success) toast.success(`${key} sent successfully!`, { id: toastId });
       else toast.error(`Failed to send ${key}`, { id: toastId });
     } catch (error) {
       const message =
